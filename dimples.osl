@@ -1,0 +1,38 @@
+// dimples.osl
+
+shader dimples(
+    float frequency = 20,           // Controls dimple density
+    float dimpleRadius = 0.1,      // Radius of each dimple
+    float dimpleDepth = 0.1,        // Max depth of a dimple
+    color baseColor = color(1.0, 1.0, 1.0), // white base
+    output float dispAmount = 0,
+    output float Rout = 0.2,
+    output float Sout = 0.4,
+    output color Cout = 0
+)
+{
+    // base color
+    Cout = baseColor;
+    dispAmount = 0;
+
+    // Grid coords
+    float uTile = mod(u * frequency, 1.0);
+    float vTile = mod(v * frequency, 1.0);
+
+    point here = point(uTile, vTile, 0);
+    point center = point(0.5, 0.5, 0);
+
+    float dist = distance(center, here);
+
+    // Dimple shape (negative for indentation)
+    if (dist < dimpleRadius) {
+        float shape = 1 - (dist / dimpleRadius);
+        dispAmount = -dimpleDepth * shape;
+
+        // slightly reduce specular inside dimples
+        Sout = 0.2 + shape * 0.2;
+    }
+
+    // slight roughness variation
+    Rout = 0.2 + noise("perlin", P * 10) * 0.1;
+}

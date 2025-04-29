@@ -1,0 +1,49 @@
+# golfball.rib
+Display "golfball.exr" "it" "rgba"
+Format 640 480 1.0
+# Format 1920 1028 1.0
+
+WorldBegin
+    Translate 0 0 5
+    Rotate -20 1 0 0
+
+	AttributeBegin
+        Attribute "identifier" "string name" ["myDistantLight"]
+        Light "PxrDistantLight" "handle_distantLight"
+            "float intensity" [5]
+            "color lightColor" [1 1 1]
+    AttributeEnd
+
+
+    AttributeBegin
+        Bxdf "PxrSurface" "PxrGroundSurface"
+            "color diffuseColor" [0.2 0.2 0.2]   # Dark gray ground
+            "float diffuseGain" [1]
+        Polygon "P" [-5 -1 -5 
+                      5 -1 -5 
+                      5 -1 5 
+                      -5 -1 5]
+    AttributeEnd
+
+    Pattern "dimples" "dimplePattern"
+        "float frequency" [20]
+        "float dimpleRadius" [0.2]
+        "float dimpleDepth" [0.25]
+        "color baseColor" [1.0 0.6 0.7]
+
+    AttributeBegin
+        Attribute "displacementbound" "sphere" [0.5]
+        # Attribute "dice" "int micropolygonlength" [1]
+
+        Displace "PxrDisplace" "golfballDisp"
+            "float dispAmount" [0.5]
+            "reference float dispScalar" ["dimplePattern:dispAmount"]
+
+        Bxdf "PxrSurface" "PxrSurface1"
+            "color diffuseColor" [0.9 0.9 0.9]    # White ball
+            "float diffuseGain" [1]
+            "color specularFaceColor" [1 1 1]     # Shiny highlights
+        Sphere 1 -1 1 360
+    AttributeEnd
+
+WorldEnd

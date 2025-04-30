@@ -1,38 +1,59 @@
 // dimples.osl
+/*
+    Displacement Shader: Procedural Golf Ball Dimples
+    --------------------------------------------------
 
+    This shader is meant to be applied to a sphere (e.g., from a .rib file)
+    to create a realistic golf ball surface using procedural displacement.
+
+    How it works:
+    - The shader reads in a list of dimple centers (distributed using the Fibonacci sphere method)
+      from an included file (dimple_centers.oslinclude).
+    - For every surface point on the sphere:
+        - We check how close it is to each dimple center (using angular distance on the sphere).
+        - If it is within a certain radius of a center, we compute how far inward to displace it.
+        - The displacement is strongest at the exact center of the dimple, and gradually fades
+          to zero at the edge, using a smooth falloff (via smoothstep).
+    - This results in smooth, circular dimples being "pushed" into the sphere's surface,
+      creating a visually convincing golf ball appearance.
+
+    Parameters:
+    - dimple_radius: controls how wide each dimple is (in radians).
+    - dimple_depth: controls how deep the dimples are pushed into the sphere.
+
+    Notes:
+    - The shader assumes the object is a normalized unit sphere.
+    - Make sure displacementbound attribute in the .rib file is set large enough
+      to accommodate the maximum displacement depth.
+*/
+
+#include "dimple_centers.oslinclude"
+
+// 20 rows i think
 shader dimples(
-    float frequency = 20,           // Controls dimple density
-    float dimpleRadius = 0.1,      // Radius of each dimple
-    float dimpleDepth = 0.1,        // Max depth of a dimple
-    color baseColor = color(1.0, 1.0, 1.0), // white base
-    output float dispAmount = 0,
-    output float Rout = 0.2,
-    output float Sout = 0.4,
-    output color Cout = 0
-)
+    float dimple_radius = 0.06,   // angular radius in radians
+    float dimple_depth = 0.03,    // how deep each dimple is
+    output point resultP = P)
 {
-    // base color
-    Cout = baseColor;
-    dispAmount = 0;
+    // Normalize the point to treat it as lying on a unit sphere
+    vector pos = normalize(vector(P));
 
-    // Grid coords
-    float uTile = mod(u * frequency, 1.0);
-    float vTile = mod(v * frequency, 1.0);
+    float displaceVal = 0.0;
+    int numDimples = 392;
 
-    point here = point(uTile, vTile, 0);
-    point center = point(0.5, 0.5, 0);
+    // Loop over all dimple centers
+    for (int i = 0; i < numDimples; ++i) {
+        point center = get_dimple_center(i);
+        // float angle = acos(dot(pos, normalize(center))); // angular distance
+        float angle = acos(dot(pos, normalize(vector(center))));
 
-    float dist = distance(center, here);
-
-    // Dimple shape (negative for indentation)
-    if (dist < dimpleRadius) {
-        float shape = 1 - (dist / dimpleRadius);
-        dispAmount = -dimpleDepth * shape;
-
-        // slightly reduce specular inside dimples
-        Sout = 0.2 + shape * 0.2;
+        // If within range, compute displacement
+        if (angle < dimple_radius) {
+            float falloff = 1.0 - smoothstep(0.0, dimple_radius, angle);
+            displaceVal -= falloff * dimple_depth;
+        }
     }
 
-    // slight roughness variation
-    Rout = 0.2 + noise("perlin", P * 10) * 0.1;
+    // Move the point inward along the normal direction
+    resultP += displaceVal * pos;
 }

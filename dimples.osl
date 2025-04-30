@@ -1,59 +1,34 @@
 // dimples.osl
 /*
-    Displacement Shader: Procedural Golf Ball Dimples
-    --------------------------------------------------
+    Pattern Shader: Dimple Displacement Amount Calculator
+    -----------------------------------------------------
+    This shader computes the scalar displacement amount (`dispAmount`) for each point
+    on a sphere based on proximity to procedural dimple centers.
 
-    This shader is meant to be applied to a sphere (e.g., from a .rib file)
-    to create a realistic golf ball surface using procedural displacement.
-
-    How it works:
-    - The shader reads in a list of dimple centers (distributed using the Fibonacci sphere method)
-      from an included file (dimple_centers.oslinclude).
-    - For every surface point on the sphere:
-        - We check how close it is to each dimple center (using angular distance on the sphere).
-        - If it is within a certain radius of a center, we compute how far inward to displace it.
-        - The displacement is strongest at the exact center of the dimple, and gradually fades
-          to zero at the edge, using a smooth falloff (via smoothstep).
-    - This results in smooth, circular dimples being "pushed" into the sphere's surface,
-      creating a visually convincing golf ball appearance.
-
-    Parameters:
-    - dimple_radius: controls how wide each dimple is (in radians).
-    - dimple_depth: controls how deep the dimples are pushed into the sphere.
-
-    Notes:
-    - The shader assumes the object is a normalized unit sphere.
-    - Make sure displacementbound attribute in the .rib file is set large enough
-      to accommodate the maximum displacement depth.
+    Use this output as input to PxrDisplace in a RenderMan RIS setup.
 */
-
 #include "dimple_centers.oslinclude"
 
-// 20 rows i think
 shader dimples(
-    float dimple_radius = 0.06,   // angular radius in radians
-    float dimple_depth = 0.03,    // how deep each dimple is
-    output point resultP = P)
+    float dimple_radius = 0.5,
+    float dimple_depth = 1.0,
+    int numDimples = 392,
+    output float dispAmount = 0.0)
 {
-    // Normalize the point to treat it as lying on a unit sphere
-    vector pos = normalize(vector(P));
+    // vector pos = normalize(vector(P));  // unit sphere
+    vector pos = normalize(transform("object", P));
 
     float displaceVal = 0.0;
-    int numDimples = 392;
 
-    // Loop over all dimple centers
     for (int i = 0; i < numDimples; ++i) {
         point center = get_dimple_center(i);
-        // float angle = acos(dot(pos, normalize(center))); // angular distance
         float angle = acos(dot(pos, normalize(vector(center))));
 
-        // If within range, compute displacement
         if (angle < dimple_radius) {
             float falloff = 1.0 - smoothstep(0.0, dimple_radius, angle);
             displaceVal -= falloff * dimple_depth;
         }
     }
 
-    // Move the point inward along the normal direction
-    resultP += displaceVal * pos;
+    dispAmount = displaceVal;
 }

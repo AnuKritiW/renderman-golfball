@@ -1,7 +1,5 @@
 # golfball.rib
 Option "searchpath" "shader" ["./"]
-Option "render" "string hider" ["hidden"]
-Option "Hider" "string integrationmode" ["raytrace"]
 
 Display "golfball.exr" "it" "rgba"
 Format 640 480 1.0
@@ -11,6 +9,7 @@ WorldBegin
     Translate 0 0 5
     Rotate -20 1 0 0
 
+    # lighting
 	AttributeBegin
         Attribute "identifier" "string name" ["myDistantLight"]
         Light "PxrDistantLight" "handle_distantLight"
@@ -31,11 +30,18 @@ WorldBegin
 
     # golf ball
     AttributeBegin
-        Attribute "displacementbound" "sphere" [0.1] # match the dimple depth
-        Displacement "dimples"
-            "float dimple_radius" [0.06]
-            "float dimple_depth" [0.03]
+        Attribute "displacementbound" "sphere" [1.0]
+
+        # 1. Call the OSL pattern shader to compute dispAmount
+        Pattern "dimples" "dimplePattern"
+            "float dimple_radius" [0.5]
+            "float dimple_depth" [1.0]
             "int numDimples" [392]
+
+        # 2. Pass dispAmount to PxrDisplace
+        Displace "PxrDisplace" "golfballDisp"
+            "float dispAmount" [0.1]  # will be overridden by reference
+            "reference float dispScalar" ["dimplePattern:dispAmount"]
 
         Bxdf "PxrSurface" "PxrSurface1"
             "color diffuseColor" [0.9 0.9 0.9]    # White ball

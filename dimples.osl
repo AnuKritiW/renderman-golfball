@@ -10,8 +10,8 @@
 #include "dimple_centers.oslinclude"
 
 shader dimples(
-    float dimple_radius = 0.5,
-    float dimple_depth = 1.0,
+    float dimple_radius = 0.115,
+    float dimple_depth = 0.2,
     int numDimples = 392,
     output float dispAmount = 0.0)
 {

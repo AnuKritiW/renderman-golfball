@@ -30,12 +30,13 @@ WorldBegin
 
     # golf ball
     AttributeBegin
-        Attribute "displacementbound" "sphere" [1.0]
+        Attribute "displacementbound" "sphere" [0.1]
+        Attribute "dice" "float micropolygonlength" [0.5]
 
         # 1. Call the OSL pattern shader to compute dispAmount
         Pattern "dimples" "dimplePattern"
-            "float dimple_radius" [0.5]
-            "float dimple_depth" [1.0]
+            "float dimple_radius" [0.115]
+            "float dimple_depth" [0.2]
             "int numDimples" [392]
 
         # 2. Pass dispAmount to PxrDisplace

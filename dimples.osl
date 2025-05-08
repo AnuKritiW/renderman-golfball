@@ -10,25 +10,30 @@
 #include "dimple_centers.oslinclude"
 
 shader dimples(
-    float dimple_radius = 0.115,
-    float dimple_depth = 0.2,
-    int numDimples = 392,
+    float dimple_radius = 0.09,
+    float dimple_depth = 0.15,
+    int numDimples = 400,
     output float dispAmount = 0.0)
 {
     // vector pos = normalize(vector(P));  // unit sphere
     vector pos = normalize(transform("object", P));
 
-    float displaceVal = 0.0;
+    // Track the closest dimple within the radius
+    float minAngle = dimple_radius;
+    float bestFalloff = 0.0;
 
-    for (int i = 0; i < numDimples; ++i) {
+    for (int i = 0; i < numDimples; ++i)
+    {
         point center = get_dimple_center(i);
         float angle = acos(dot(pos, normalize(vector(center))));
 
-        if (angle < dimple_radius) {
+        if (angle < minAngle)
+        {
+            minAngle = angle;
             float falloff = 1.0 - smoothstep(0.0, dimple_radius, angle);
-            displaceVal -= falloff * dimple_depth;
+            bestFalloff = falloff;
         }
     }
 
-    dispAmount = displaceVal;
+    dispAmount -= bestFalloff * dimple_depth;
 }

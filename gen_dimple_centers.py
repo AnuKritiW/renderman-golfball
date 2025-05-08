@@ -1,6 +1,8 @@
 import math
 
-def fibonacci_sphere(samples=392):
+num_dimples = 400
+
+def fibonacci_sphere(samples=num_dimples):
     # Generates `samples` points evenly distributed on a unit sphere
     points = []
     phi = math.pi * (3.0 - math.sqrt(5.0))      # golden angle in radians
@@ -29,7 +31,6 @@ def write_oslinclude(points, filename="dimple_centers.oslinclude"):
         f.write("}\n")
 
 if __name__ == "__main__":
-    num_dimples = 392  # TODO: adjust
     points = fibonacci_sphere(num_dimples)
     write_oslinclude(points)
     print(f"Wrote {num_dimples} dimple centers to dimple_centers.oslinclude")

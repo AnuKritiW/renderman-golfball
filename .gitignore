@@ -1,1 +1,5 @@
 *.oso
+venv/
+generate_goldberg.py
+*.oslinclude
+*.nfs*

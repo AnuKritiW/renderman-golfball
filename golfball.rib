@@ -37,7 +37,7 @@ WorldBegin
 
         # 1. Call the OSL pattern shader to compute dispAmount
         Pattern "dimples" "dimplePattern"
-            "float dimple_radius" [0.09]
+            "float dimple_radius" [0.1]
             "float dimple_depth" [0.15]
             "int numDimples" [392]
 

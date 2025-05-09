@@ -28,20 +28,57 @@ WorldBegin
         TransformEnd
     AttributeEnd
 
-    # lighting
-	AttributeBegin
-        Attribute "identifier" "string name" ["sphereLight"]
+    # # lighting
+	# AttributeBegin
+    #     Attribute "identifier" "string name" ["sphereLight"]
+    #     Attribute "visibility" "int camera" [0] "int indirect" [0] "int transmission" [1]
+    #     TransformBegin
+    #         Translate 2 3 -1
+    #         # Rotate 30 1 0 0         # tilt downward
+    #         # Rotate -45 0 1 0        # swing from the left
+    #         Light "PxrSphereLight" "handle_sphereLight"
+    #             "float intensity" [20]
+    #             "float exposure" [0]
+    #             "color lightColor" [1 1 1]
+    #             "int enableShadows" [1]
+    #     TransformEnd
+    # AttributeEnd
+
+    # 3 point light rig
+    AttributeBegin
+
+        # Key light — front-left (main shape/shine)
         Attribute "visibility" "int camera" [0] "int indirect" [0] "int transmission" [1]
         TransformBegin
-            Translate 2 3 -1
-            # Rotate 30 1 0 0         # tilt downward
-            # Rotate -45 0 1 0        # swing from the left
-            Light "PxrSphereLight" "handle_sphereLight"
-                "float intensity" [20]
-                "float exposure" [0]
-                "color lightColor" [1 1 1]
+            Translate -1.5 1.5 -2
+            Light "PxrSphereLight" "keyLight"
+                "float intensity" [9.0]
+                "int enableTemperature" [1]
+                "float temperature" [6400]
                 "int enableShadows" [1]
+                "color shadowColor" [0 0 0]
         TransformEnd
+
+        # Fill light — front-right (soften shadows)
+        TransformBegin
+            Translate 1.7 1 -1.8
+            Light "PxrSphereLight" "fillLight"
+                "float intensity" [1.2]
+                "int enableTemperature" [1]
+                "float temperature" [6300]
+                "int enableShadows" [0]
+        TransformEnd
+
+        # Rim light — behind left (adds silhouette edge)
+        TransformBegin
+            Translate -1.0 1.5 2
+            Light "PxrSphereLight" "rimLight"
+                "float intensity" [12.0]
+                "int enableTemperature" [1]
+                "float temperature" [6000]
+                "int enableShadows" [0]
+        TransformEnd
+
     AttributeEnd
 
     # ground plane

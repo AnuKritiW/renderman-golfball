@@ -5,52 +5,101 @@ Display "golfball.exr" "it" "rgba"
 # Format 640 480 1.0
 Format 1920 1028 1.0
 
-# Projection "perspective" "float fov" [45]
+Projection "perspective" "float fov" [45]
+
+Hider "raytrace" "int incremental" [1] "int maxsamples" [16]
+Integrator "PxrPathTracer" "integrator"
+PixelFilter "gaussian" 2 2
 
 WorldBegin
     Translate 0 0 5
-    Rotate -90 1 0 0
 
     # lighting
 	AttributeBegin
-        Attribute "identifier" "string name" ["myDistantLight"]
-        Light "PxrDistantLight" "handle_distantLight"
-            "float intensity" [5]
-            "color lightColor" [1 1 1]
+        Attribute "identifier" "string name" ["envLight"]
+        TransformBegin
+            Rotate -45 1 0 0    # tilt sun downward
+            Rotate 60 0 1 0     # swing sun to side
+            Light "PxrEnvDayLight" "envLight"
+                "float intensity" [5]
+                "int month" [6]
+                "int day" [20]
+                "float hour" [21.0]
+        TransformEnd
+    AttributeEnd
+
+    # lighting
+	AttributeBegin
+        Attribute "identifier" "string name" ["sphereLight"]
+        Attribute "visibility" "int camera" [0] "int indirect" [0] "int transmission" [1]
+        TransformBegin
+            Translate 2 3 -1
+            # Rotate 30 1 0 0         # tilt downward
+            # Rotate -45 0 1 0        # swing from the left
+            Light "PxrSphereLight" "handle_sphereLight"
+                "float intensity" [20]
+                "float exposure" [0]
+                "color lightColor" [1 1 1]
+                "int enableShadows" [1]
+        TransformEnd
     AttributeEnd
 
     # ground plane
     AttributeBegin
         Bxdf "PxrSurface" "PxrGroundSurface"
-            "color diffuseColor" [0.2 0.2 0.2]   # Dark gray ground
+            "color diffuseColor" [0.1 0.1 0.3]
             "float diffuseGain" [1]
-        Polygon "P" [-5 -1 -5 
-                      5 -1 -5 
+        Polygon "P" [-5 -1 5
                       5 -1 5 
-                      -5 -1 5]
+                      5 -1 -5
+                     -5 -1 -5]
     AttributeEnd
 
     # golf ball
     AttributeBegin
+        # Rotate -90 1 0 0
+
         Attribute "displacementbound" "sphere" [0.1]
         Attribute "dice" "float micropolygonlength" [0.5]
 
         # 1. Call the OSL pattern shader to compute dispAmount
         Pattern "dimples" "dimplePattern"
-            "float dimple_radius" [0.1]
+            "float dimple_radius" [0.105]
             "float dimple_depth" [0.15]
-            "int numDimples" [392]
+            "int numDimples" [346]
 
         # 2. Pass dispAmount to PxrDisplace
         Displace "PxrDisplace" "golfballDisp"
             "float dispAmount" [0.1]  # will be overridden by reference
             "reference float dispScalar" ["dimplePattern:dispAmount"]
 
-        Bxdf "PxrSurface" "PxrSurface1"
-            "color diffuseColor" [0.9 0.9 0.9]    # White ball
-            "float diffuseGain" [1]
-            "color specularFaceColor" [1 1 1]     # Shiny highlights
+        # For Testing without lights (e.g. checking dimples)
+        # Bxdf "PxrSurface" "PxrSurface1"
+        #     "color diffuseColor" [0.9 0.9 0.9]    # White ball
+        #     "float diffuseGain" [1]
+        #     "color specularFaceColor" [1 1 1]     # Shiny highlights
+
+        Bxdf "PxrSurface" "PxrGolfBall"
+            # Red plastic base
+            "color diffuseColor" [1.0 0.0 0.0]
+            "float diffuseGain" [1.0]
+            "float diffuseExponent" [0.0]
+
+            # Specular coating (plastic shine)
+            "float specularRoughness" [0.4]
+            "color specularEdgeColor" [0.2 0.2 0.2]
+            "color specularFaceColor" [0.25 0.25 0.25]
+
+            "color clearcoatFaceColor" [0.0 0.0 0.0]    # Subtle gloss contribution
+            "color clearcoatEdgeColor" [0.1 0.1 0.1]    # Stronger at glancing angles
+            "float clearcoatRoughness" [0.5]           # Sharp highlight
+            "float clearcoatAnisotropy" [0.0]
+
+            # Enable bump-like shading from dimples
+            "int specularModelType" [1]  # GGX is better for rough surfaces
+
         Sphere 1 -1 1 360
+
     AttributeEnd
 
 WorldEnd

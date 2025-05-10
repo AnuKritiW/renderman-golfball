@@ -64,11 +64,11 @@ WorldBegin
 
         # Extra low-side fill (form light)
         TransformBegin
-            Translate -2 0.5 -1.5
+            # Translate -2 0.5 -1.5
+            Translate -2.5 0.3 -1.2
             Light "PxrSphereLight" "formFill"
-                "float intensity" [1.2]
+                "float intensity" [1.0]
                 "float exposure" [0]
-                "float radius" [0.05]
                 "color lightColor" [1 1 1]
                 "int enableShadows" [1]
                 "color shadowColor" [0 0 0]
@@ -78,10 +78,35 @@ WorldBegin
             Translate 1.2 2.5 -1.8
             Light "PxrSphereLight" "deskLamp"
                 "float intensity" [3.5]
-                "float radius" [0.03]
                 "color lightColor" [1 1 1]
                 "int enableShadows" [1]
         TransformEnd
+
+        TransformBegin
+            Translate -2 0.8 -1
+            Light "PxrSphereLight" "dimpleContrast"
+                "float intensity" [2.0]
+                "color lightColor" [1 1 1]
+                "int enableShadows" [1]
+        TransformEnd
+
+        # Soft uplift to fill lower right shadow zone
+        TransformBegin
+            Translate 2.0 0.5 1.5
+            Light "PxrSphereLight" "shadowLift"
+                "float intensity" [0.8]                # Low lift
+                "color lightColor" [1 1 1]
+                "int enableShadows" [0]                # No cast shadows
+        TransformEnd
+
+        TransformBegin
+            Translate 0.0 -0.5 -1.7   # In front and below
+            Light "PxrSphereLight" "bottomFrontFill"
+                "float intensity" [0.7]
+                "color lightColor" [1 1 1]
+                "int enableShadows" [0]
+        TransformEnd
+
     AttributeEnd
 
     # ground plane
@@ -104,9 +129,9 @@ WorldBegin
 
         # 1. Call the OSL pattern shader to compute dispAmount
         Pattern "dimples" "dimplePattern"
-            "float dimple_radius" [0.105]
-            "float dimple_depth" [0.2]
-            "int numDimples" [356]
+            "float dimple_radius" [0.1]
+            "float dimple_depth" [0.25]
+            "int numDimples" [377]
 
         # 2. Pass dispAmount to PxrDisplace
         Displace "PxrDisplace" "golfballDisp"
@@ -121,20 +146,22 @@ WorldBegin
 
         Bxdf "PxrSurface" "PxrGolfBall"
             # Red plastic base
-            "color diffuseColor" [0.85 0.0 0.0]
+            "color diffuseColor" [0.95 0.27 0.6]   # pink
+            "reference color diffuseColor" ["dimplePattern:shadowTint"]
+            # "color diffuseColor" [0.85 0.0 0.0]  # red
             "float diffuseGain" [1.0]
             "float diffuseExponent" [0.0]
 
             # Specular coating (plastic shine)
             "int specularFresnelMode" [1] #setting it 1 will ignore faceColor and fresnelExponent
-            "float specularRoughness" [0.2]
-            "color specularEdgeColor" [0.2 0.2 0.2]
+            "float specularRoughness" [0.08]
+            "color specularEdgeColor" [0.6 0.6 0.6]
             # "color specularFaceColor" [0.25 0.25 0.25]
-            "color specularIor" [1.45 1.45 1.45]
+            "color specularIor" [1.5 1.5 1.5]
 
-            "color clearcoatFaceColor" [0.005 0.005 0.005]    # Subtle gloss contribution
-            "color clearcoatEdgeColor" [0.1 0.1 0.1]    # Stronger at glancing angles
-            "float clearcoatRoughness" [0.06]            # Sharp highlight
+            "color clearcoatFaceColor" [0.015 0.015 0.015]    # Subtle gloss contribution
+            "color clearcoatEdgeColor" [0.25 0.25 0.25]    # Stronger at glancing angles
+            "float clearcoatRoughness" [0.03]            # Sharp highlight
             "float clearcoatAnisotropy" [0.0]
 
             # Enable bump-like shading from dimples

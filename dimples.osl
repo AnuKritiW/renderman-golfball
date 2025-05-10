@@ -12,8 +12,9 @@
 shader dimples(
     float dimple_radius = 0.105,
     float dimple_depth = 0.2,
-    int numDimples = 356,
-    output float dispAmount = 0.0)
+    int numDimples = 377,
+    output float dispAmount = 0.0,
+    output color shadowTint = color(1.0))
 {
     // vector pos = normalize(vector(P));  // unit sphere
     vector pos = normalize(transform("object", P));
@@ -30,10 +31,18 @@ shader dimples(
         if (angle < minAngle)
         {
             minAngle = angle;
+            // float t = clamp(angle / dimple_radius, 0.0, 1.0);
+            // float falloff = pow(1.0 - t, 4); // Exponential falloff for sharper edges
             float falloff = 1.0 - smoothstep(0.0, dimple_radius, angle);
             bestFalloff = falloff;
         }
     }
 
     dispAmount -= bestFalloff * dimple_depth;
+
+    // Shadow effect: darken color by 0.3× at dimple centers
+    float shadowAmount = 1.0 - 0.3 * bestFalloff;
+
+    color baseColor = color(0.95, 0.27, 0.6);
+    shadowTint = color(shadowAmount) * baseColor;  // Uniformly darken RGB channels
 }

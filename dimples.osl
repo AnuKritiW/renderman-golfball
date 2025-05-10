@@ -11,8 +11,8 @@
 
 shader dimples(
     float dimple_radius = 0.105,
-    float dimple_depth = 0.15,
-    int numDimples = 346,
+    float dimple_depth = 0.2,
+    int numDimples = 356,
     output float dispAmount = 0.0)
 {
     // vector pos = normalize(vector(P));  // unit sphere

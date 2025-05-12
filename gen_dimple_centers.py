@@ -1,6 +1,6 @@
 import math
 
-num_dimples = 336
+num_dimples = 377
 
 def fibonacci_sphere(samples=num_dimples):
     # Generates `samples` points evenly distributed on a unit sphere

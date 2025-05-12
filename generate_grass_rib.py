@@ -1,5 +1,6 @@
 import random
 import os
+import shutil
 
 # Parameters
 x_range = (-10, 10)
@@ -12,7 +13,13 @@ patch_size = 2.0        # each patch covers a 2x2 area
 blades_per_patch = 4000 # density control per patch
 
 output_dir = 'grass_patches'
-os.makedirs(output_dir, exist_ok=True)
+
+
+# Clear out old patches to avoid stale files
+if os.path.exists(output_dir):
+    shutil.rmtree(output_dir)
+
+os.makedirs(output_dir)
 
 # patch grid layout
 x_start, x_end = x_range
@@ -30,6 +37,8 @@ AttributeBegin
 \t\t"float specularRoughness" [0.3]
 """
 
+patch_paths = []
+
 # generate each patch
 for i in range(num_patches_x):
     for j in range(num_patches_z):
@@ -39,6 +48,7 @@ for i in range(num_patches_x):
         z1 = z0 + patch_size
 
         filename = os.path.join(output_dir, f"grass_patch_{i}_{j}.rib")
+        patch_paths.append(filename)
 
         with open(filename, "w") as f:
             f.write(rib_header)
@@ -78,6 +88,5 @@ for i in range(num_patches_x):
 
 # create a master list of readarchive calls
 with open("include_all_patches.rib", "w") as f:
-    for i in range(num_patches_x):
-        for j in range(num_patches_z):
-            f.write(f'ReadArchive "{output_dir}/grass_patch_{i}_{j}.rib"\n')
+    for path in patch_paths:
+        f.write(f'ReadArchive "{path}"\n')

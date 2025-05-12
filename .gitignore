@@ -3,3 +3,4 @@ venv/
 archive/
 *.oslinclude
 *.nfs*
+grass_generated.rib

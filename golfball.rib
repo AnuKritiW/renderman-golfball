@@ -15,18 +15,18 @@ WorldBegin
     Translate 0 0 5
 
     # lighting
-	# AttributeBegin
-    #     Attribute "identifier" "string name" ["envLight"]
-    #     TransformBegin
-    #         Rotate -45 1 0 0    # tilt sun downward
-    #         Rotate 60 0 1 0     # swing sun to side
-    #         Light "PxrEnvDayLight" "envLight"
-    #             "float intensity" [5]
-    #             "int month" [6]
-    #             "int day" [20]
-    #             "float hour" [21.0]
-    #     TransformEnd
-    # AttributeEnd
+	AttributeBegin
+        Attribute "identifier" "string name" ["envLight"]
+        TransformBegin
+            Rotate -45 1 0 0    # tilt sun downward
+            Rotate 60 0 1 0     # swing sun to side
+            Light "PxrEnvDayLight" "envLight"
+                "float intensity" [5]
+                "int month" [6]
+                "int day" [14]
+                "float hour" [21.0]
+        TransformEnd
+    AttributeEnd
 
     # 3 point light rig
     AttributeBegin
@@ -112,13 +112,16 @@ WorldBegin
     # ground plane
     AttributeBegin
         Bxdf "PxrSurface" "PxrGroundSurface"
-            "color diffuseColor" [0.1 0.1 0.3]
+            "color diffuseColor" [0.071 0.039 0.0]
             "float diffuseGain" [1]
-        Polygon "P" [-5 -1 5
-                      5 -1 5 
-                      5 -1 -5
-                     -5 -1 -5]
+        Polygon "P" [-10 -1.05 8
+                      10 -1.05 8
+                      10 -1.05 -3
+                     -10 -1.05 -3]
     AttributeEnd
+
+    # grass
+    ReadArchive "include_all_patches.rib"
 
     # golf ball
     AttributeBegin

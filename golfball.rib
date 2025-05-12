@@ -121,7 +121,7 @@ WorldBegin
     AttributeEnd
 
     # grass
-    ReadArchive "grass_generated.rib"
+    ReadArchive "include_all_patches.rib"
 
     # golf ball
     AttributeBegin

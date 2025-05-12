@@ -4,3 +4,5 @@ archive/
 *.oslinclude
 *.nfs*
 grass_generated.rib
+include_all_patches.rib
+grass_patches/

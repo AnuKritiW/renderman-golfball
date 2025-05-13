@@ -1,12 +1,14 @@
 // dimples.osl
 /*
-    Pattern Shader: Dimple Displacement Amount Calculator
-    -----------------------------------------------------
-    This shader computes the scalar displacement amount (`dispAmount`) for each point
-    on a sphere based on proximity to procedural dimple centers.
-
-    Use this output as input to PxrDisplace in a RenderMan RIS setup.
+    Pattern Shader: Dimple Displacement + Dirt Masking
+    ---------------------------------------------------
+    This shader:
+    1. Computes a displacement amount (`dispAmount`) for each point based on proximity to dimple centers.
+    2. Outputs a `shadowTint` color that includes:
+       - a shadowing effect inside dimples
+       - procedural dirt around dimple rims using noise
 */
+
 #include "dimple_centers.oslinclude"
 
 shader dimples(
@@ -16,7 +18,7 @@ shader dimples(
     output float dispAmount = 0.0,
     output color shadowTint = color(1.0))
 {
-    // vector pos = normalize(vector(P));  // unit sphere
+    // Normalize position to unit sphere (in object space)
     vector pos = normalize(transform("object", P));
 
     // Track the closest dimple within the radius
@@ -38,11 +40,24 @@ shader dimples(
         }
     }
 
+    // Apply dimple depth displacement
     dispAmount -= bestFalloff * dimple_depth;
 
     // Shadow effect: darken color by 0.3× at dimple centers
+    color baseColor = color(0.95, 0.27, 0.6);      // match base color in .rib
     float shadowAmount = 1.0 - 0.3 * bestFalloff;
-
-    color baseColor = color(0.95, 0.27, 0.6);
     shadowTint = color(shadowAmount) * baseColor;  // Uniformly darken RGB channels
+
+    // Compute dirt effect around dimple rims
+    float rimEdge = smoothstep(0.3, 0.6, bestFalloff) * (1.0 - smoothstep(0.6, 0.9, bestFalloff));
+
+    // Procedural noise to vary dirtiness
+    float dirtNoise = noise("perlin", pos * 50); // higher freq results in finer dirt detail
+    dirtNoise = smoothstep(0.4, 0.6, dirtNoise); // Threshold for blotchiness
+
+    float dirtMask = clamp(rimEdge * dirtNoise * 3.0, 0.0, 1.0); // Combine shape and noise
+    color dirtColor = color(0.122, 0.078, 0.012); // brownish dirt tone
+
+    // blend clean surface with dirt
+    shadowTint = mix(shadowTint, dirtColor, dirtMask);
 }

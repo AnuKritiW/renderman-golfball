@@ -52,16 +52,38 @@ shader dimples(
     float outerRegion = smoothstep(0.55, 0.6, 1.0 - bestFalloff);  // strongest when far from dimple center
 
     // Procedural noise to vary dirtiness
-    float dirtNoise = noise("simplex", pos * 60); // higher freq results in finer dirt detail
+    float dirtNoise = noise("simplex", pos * 45); // higher freq results in finer dirt detail
     dirtNoise = smoothstep(0.4, 0.6, dirtNoise); // Threshold for blotchiness
 
-    vector dirtCenter = vector(-0.766084, 0.574468, -0.893861);  // front center
-    float distToPatch = distance(pos, dirtCenter);
+    float dirtLocation = 0.0;
+    // int dirtIndices[3] = { 87, 180, 320 };  // Chosen to be spaced out
 
-    // Hard threshold mask
-    float jitter = noise("perlin", pos * 25);
-    float noisyRadius = 0.5 + jitter * 0.15;
-    float dirtLocation = 1.0 - smoothstep(noisyRadius - 0.05, noisyRadius + 0.05, distToPatch);
+    point dirtCenters[3] = {
+        point(-0.766084, 0.574468, -0.893861),  // top-left-front
+        point( 0.8,     -0.4,     -0.8),        // bottom-right-front
+        point( 0.0,      0.2,      1.0)         // back center
+    };
+
+    float baseRadii[3] = { 0.5, 0.55, 0.4 };
+
+    for (int i = 0; i < 3; ++i) {
+        // point dirtCenter = get_dimple_center(dirtIndices[i]);
+        float dist = distance(pos, dirtCenters[i]);
+
+        float jitter = noise("perlin", pos * (30 + i * 10));
+        float noisyRadius = baseRadii[i] + jitter * 0.1;
+
+        float patch = 1.0 - smoothstep(noisyRadius - 0.05, noisyRadius + 0.05, dist);
+        dirtLocation = max(dirtLocation, patch);
+    }
+
+    // vector dirtCenter = vector(-0.766084, 0.574468, -0.893861);  // front center
+    // float distToPatch = distance(pos, dirtCenter);
+
+    // // Hard threshold mask
+    // float jitter = noise("perlin", pos * 25);
+    // float noisyRadius = 0.5 + jitter * 0.15;
+    // float dirtLocation = 1.0 - smoothstep(noisyRadius - 0.05, noisyRadius + 0.05, distToPatch);
 
     float dirtMask = clamp(outerRegion * dirtNoise * dirtLocation * 1.5, 0.0, 1.0); // Combine shape and noise
     color dirtColor = color(0.122, 0.078, 0.012); // brownish dirt tone

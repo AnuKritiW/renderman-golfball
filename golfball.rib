@@ -1,14 +1,15 @@
 # golfball.rib
 Option "searchpath" "shader" ["./"]
 
-Display "golfball.exr" "it" "rgba"
-# Format 640 480 1.0
-Format 1920 1028 1.0
+# Display "golfball.exr" "it" "rgba"
+Display "golfball.exr" "openexr" "rgba"
+# Format 1920 1080 1.0
+Format 3840 2160 1.0 # 4k res
 
 Projection "perspective" "float fov" [45]
 
-Hider "raytrace" "int incremental" [1] "int maxsamples" [16]
 Integrator "PxrPathTracer" "integrator"
+Hider "raytrace" "int incremental" [1] "int maxsamples" [4]
 PixelFilter "gaussian" 2 2
 
 WorldBegin
@@ -125,7 +126,7 @@ WorldBegin
 
     # golf ball
     AttributeBegin
-        Rotate -75 1 0 0
+        # Rotate -75 1 0 0
 
         Attribute "displacementbound" "sphere" [0.1]
         Attribute "dice" "float micropolygonlength" [0.5]

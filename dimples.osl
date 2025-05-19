@@ -51,12 +51,9 @@ shader dimples(
     // Raised surface = low falloff; dirt goes outside dimples
     float outerRegion = smoothstep(0.55, 0.6, 1.0 - bestFalloff);  // strongest when far from dimple center
 
-    // Compute dirt effect around dimple rims
-    // float rimEdge = smoothstep(0.3, 0.6, bestFalloff) * (1.0 - smoothstep(0.6, 0.9, bestFalloff));
-
     // Procedural noise to vary dirtiness
-    float dirtNoise = noise("perlin", pos * 80); // higher freq results in finer dirt detail
-    dirtNoise = smoothstep(0.2, 0.6, dirtNoise); // Threshold for blotchiness
+    float dirtNoise = noise("simplex", pos * 60); // higher freq results in finer dirt detail
+    dirtNoise = smoothstep(0.4, 0.6, dirtNoise); // Threshold for blotchiness
 
     vector dirtCenter = vector(-0.766084, 0.574468, -0.893861);  // front center
     float distToPatch = distance(pos, dirtCenter);
@@ -66,9 +63,7 @@ shader dimples(
     float noisyRadius = 0.5 + jitter * 0.15;
     float dirtLocation = 1.0 - smoothstep(noisyRadius - 0.05, noisyRadius + 0.05, distToPatch);
 
-    // float dirtLocation = distToPatch < 0.5 ? 1.0 : 0.0;
-
-    float dirtMask = clamp(outerRegion * dirtNoise * dirtLocation * 3.0, 0.0, 1.0); // Combine shape and noise
+    float dirtMask = clamp(outerRegion * dirtNoise * dirtLocation * 1.5, 0.0, 1.0); // Combine shape and noise
     color dirtColor = color(0.122, 0.078, 0.012); // brownish dirt tone
 
     // blend clean surface with dirt

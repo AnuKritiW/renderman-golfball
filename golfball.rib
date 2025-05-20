@@ -1,14 +1,15 @@
 # golfball.rib
 Option "searchpath" "shader" ["./"]
 
-Display "golfball.exr" "it" "rgba"
-# Format 640 480 1.0
-Format 1920 1028 1.0
+# Display "golfball.exr" "it" "rgba"
+Display "golfball.exr" "openexr" "rgba"
+# Format 1920 1080 1.0
+Format 3840 2160 1.0 # 4k res
 
 Projection "perspective" "float fov" [45]
 
-Hider "raytrace" "int incremental" [1] "int maxsamples" [16]
 Integrator "PxrPathTracer" "integrator"
+Hider "raytrace" "int incremental" [1] "int maxsamples" [16]
 PixelFilter "gaussian" 2 2
 
 WorldBegin
@@ -125,7 +126,7 @@ WorldBegin
 
     # golf ball
     AttributeBegin
-        Rotate -75 1 0 0
+        # Rotate -75 1 0 0
 
         Attribute "displacementbound" "sphere" [0.1]
         Attribute "dice" "float micropolygonlength" [0.5]
@@ -149,19 +150,27 @@ WorldBegin
 
         Bxdf "PxrSurface" "PxrGolfBall"
             # Red plastic base
-            "color diffuseColor" [0.95 0.27 0.6]   # pink
+            # "color diffuseColor" [0.95 0.27 0.6]   # pink
             "reference color diffuseColor" ["dimplePattern:shadowTint"]
             # "color diffuseColor" [0.85 0.0 0.0]  # red
             "float diffuseGain" [1.0]
             "float diffuseExponent" [0.0]
 
-            # Specular coating (plastic shine)
+            # Specular reflection (gloss)
             "int specularFresnelMode" [1] #setting it 1 will ignore faceColor and fresnelExponent
-            "float specularRoughness" [0.08]
-            "color specularEdgeColor" [0.6 0.6 0.6]
+            # "float specularRoughness" [0.08]
             # "color specularFaceColor" [0.25 0.25 0.25]
             "color specularIor" [1.5 1.5 1.5]
 
+            # Make dirt matte
+            "reference float specularRoughness" ["dimplePattern:roughnessMod"]
+
+            # Reduce specular where dirty
+            "reference float specularFaceColor" ["dimplePattern:specularMod"]
+            "color specularEdgeColor" [0.6 0.6 0.6]
+
+            # clear coat
+            "reference color clearcoatFaceColor" ["dimplePattern:clearcoatColor"]
             "color clearcoatFaceColor" [0.015 0.015 0.015]    # Subtle gloss contribution
             "color clearcoatEdgeColor" [0.25 0.25 0.25]    # Stronger at glancing angles
             "float clearcoatRoughness" [0.03]            # Sharp highlight

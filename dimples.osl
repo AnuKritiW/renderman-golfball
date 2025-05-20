@@ -1,12 +1,14 @@
 // dimples.osl
 /*
-    Pattern Shader: Dimple Displacement Amount Calculator
-    -----------------------------------------------------
-    This shader computes the scalar displacement amount (`dispAmount`) for each point
-    on a sphere based on proximity to procedural dimple centers.
-
-    Use this output as input to PxrDisplace in a RenderMan RIS setup.
+    Pattern Shader: Dimple Displacement + Dirt Masking
+    ---------------------------------------------------
+    This shader:
+    1. Computes a displacement amount (`dispAmount`) for each point based on proximity to dimple centers.
+    2. Outputs a `shadowTint` color that includes:
+       - a shadowing effect inside dimples
+       - procedural dirt around dimple rims using noise
 */
+
 #include "dimple_centers.oslinclude"
 
 shader dimples(
@@ -14,9 +16,12 @@ shader dimples(
     float dimple_depth = 0.2,
     int numDimples = 377,
     output float dispAmount = 0.0,
-    output color shadowTint = color(1.0))
+    output color shadowTint = color(1.0),
+    output float roughnessMod = 0.0,
+    output float specularMod = 1.0,
+    output color clearcoatColor = color(0.015))
 {
-    // vector pos = normalize(vector(P));  // unit sphere
+    // Normalize position to unit sphere (in object space)
     vector pos = normalize(transform("object", P));
 
     // Track the closest dimple within the radius
@@ -38,11 +43,80 @@ shader dimples(
         }
     }
 
+    // Apply dimple depth displacement
     dispAmount -= bestFalloff * dimple_depth;
 
     // Shadow effect: darken color by 0.3× at dimple centers
+    color baseColor = color(0.95, 0.27, 0.6);      // match base color in .rib
     float shadowAmount = 1.0 - 0.3 * bestFalloff;
-
-    color baseColor = color(0.95, 0.27, 0.6);
     shadowTint = color(shadowAmount) * baseColor;  // Uniformly darken RGB channels
+
+    // Raised surface = low falloff; dirt goes outside dimples
+    float outerRegion = smoothstep(0.55, 0.6, 1.0 - bestFalloff);  // strongest when far from dimple center
+
+    // Procedural noise to vary dirtiness
+    float dirtNoise = noise("simplex", pos * 45); // higher freq results in finer dirt detail
+    dirtNoise = smoothstep(0.4, 0.6, dirtNoise); // Threshold for blotchiness
+
+    float dirtLocation = 0.0;
+    // int dirtIndices[3] = { 87, 180, 320 };  // Chosen to be spaced out
+
+    point dirtCenters[3] = {
+        point(-0.766084, 0.574468, -0.893861),  // top-left-front
+        point( 0.8,     -0.4,     -0.8),        // bottom-right-front
+        point( 0.0,      0.2,      1.0)         // back center
+    };
+
+    float baseRadii[3] = { 0.5, 0.55, 0.4 };
+
+    for (int i = 0; i < 3; ++i) {
+        // point dirtCenter = get_dimple_center(dirtIndices[i]);
+        float dist = distance(pos, dirtCenters[i]);
+
+        float jitter = noise("perlin", pos * (30 + i * 10));
+        float noisyRadius = baseRadii[i] + jitter * 0.1;
+
+        float patch = 1.0 - smoothstep(noisyRadius - 0.05, noisyRadius + 0.05, dist);
+        dirtLocation = max(dirtLocation, patch);
+    }
+
+    // vector dirtCenter = vector(-0.766084, 0.574468, -0.893861);  // front center
+    // float distToPatch = distance(pos, dirtCenter);
+
+    // // Hard threshold mask
+    // float jitter = noise("perlin", pos * 25);
+    // float noisyRadius = 0.5 + jitter * 0.15;
+    // float dirtLocation = 1.0 - smoothstep(noisyRadius - 0.05, noisyRadius + 0.05, distToPatch);
+
+    float dirtMask = clamp(outerRegion * dirtNoise * dirtLocation * 1.5, 0.0, 1.0); // Combine shape and noise
+
+    // Speckle layer
+    float speckleNoise = smoothstep(0.45, 0.6, noise("simplex", pos * 55));
+    float macroNoise = noise("perlin", pos * 5);
+    float macroMask = smoothstep(0.45, 0.6, macroNoise);
+
+    float speckleMask = outerRegion * speckleNoise * macroMask;
+    float speckleOnlyMask = speckleMask * (1.0 - dirtMask);
+
+    // Combine with dirt patches
+    float fullDirtMask = clamp(dirtMask + speckleOnlyMask, 0.0, 1.0);
+
+    // color dirtColor = color(0.122, 0.078, 0.012); // brownish dirt tone
+    color dirtA = color(0.15, 0.10, 0.03);   // medium golden-brown
+    color dirtB = color(0.28, 0.13, 0.05);   // warm orangey-brown
+    color dirtC = color(0.05, 0.03, 0.01);   // dark earthy brown
+
+    float tintNoise = noise("perlin", pos * 30);
+    float tintNoise2 = noise("perlin", pos * 20);
+
+    color variedDirt = mix(dirtA, dirtB, tintNoise);
+    variedDirt = mix(variedDirt, dirtC, tintNoise2);  // subtle mix into dark
+
+    // blend clean surface with dirt
+    shadowTint = mix(shadowTint, variedDirt, fullDirtMask);
+
+    // Map glossy base (0.08) to matte dirt (0.6)
+    roughnessMod = mix(0.08, 1.0, fullDirtMask);
+    specularMod = 1.0 - fullDirtMask;
+    clearcoatColor = color(0.015) * specularMod;
 }

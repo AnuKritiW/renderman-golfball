@@ -16,7 +16,10 @@ shader dimples(
     float dimple_depth = 0.2,
     int numDimples = 377,
     output float dispAmount = 0.0,
-    output color shadowTint = color(1.0))
+    output color shadowTint = color(1.0),
+    output float roughnessMod = 0.0,
+    output float specularMod = 1.0,
+    output color clearcoatColor = color(0.015))
 {
     // Normalize position to unit sphere (in object space)
     vector pos = normalize(transform("object", P));
@@ -111,4 +114,9 @@ shader dimples(
 
     // blend clean surface with dirt
     shadowTint = mix(shadowTint, variedDirt, fullDirtMask);
+
+    // Map glossy base (0.08) to matte dirt (0.6)
+    roughnessMod = mix(0.08, 1.0, fullDirtMask);
+    specularMod = 1.0 - fullDirtMask;
+    clearcoatColor = color(0.015) * specularMod;
 }

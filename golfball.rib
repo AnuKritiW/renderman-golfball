@@ -3,8 +3,8 @@ Option "searchpath" "shader" ["./"]
 
 # Display "golfball.exr" "it" "rgba"
 Display "golfball.exr" "openexr" "rgba"
-# Format 1920 1080 1.0
-Format 3840 2160 1.0 # 4k res
+Format 1920 1080 1.0
+# Format 3840 2160 1.0 # 4k res
 
 Projection "perspective" "float fov" [45]
 
@@ -15,6 +15,16 @@ PixelFilter "gaussian" 2 2
 WorldBegin
     Translate 0 0 5
 
+    AttributeBegin
+        TransformBegin
+            # Rotate -120 0 1 0
+            Light "PxrDomeLight" "domeLight"
+                "string lightColorMap" ["./assets/limpopo_golf_course_4k.tx"]
+                # "float intensity" [0.5]
+                "float exposure" [-1.0]    # 1 stop darker
+        TransformEnd
+    AttributeEnd
+
     # lighting
 	AttributeBegin
         Attribute "identifier" "string name" ["envLight"]
@@ -22,7 +32,7 @@ WorldBegin
             Rotate -45 1 0 0    # tilt sun downward
             Rotate 60 0 1 0     # swing sun to side
             Light "PxrEnvDayLight" "envLight"
-                "float intensity" [5]
+                "float intensity" [0.5]
                 "int month" [6]
                 "int day" [14]
                 "float hour" [21.0]

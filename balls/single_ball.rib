@@ -1,0 +1,46 @@
+AttributeBegin
+
+    Attribute "displacementbound" "sphere" [0.1]
+    Attribute "dice" "float micropolygonlength" [0.5]
+
+    # 1. Call the OSL pattern shader to compute dispAmount
+    Pattern "dimples" "dimplePattern"
+        "float dimple_radius" [0.1]
+        "float dimple_depth" [0.25]
+        "int numDimples" [377]
+        "color baseColor" [0.95 0.27 0.6] # pink
+
+    # 2. Pass dispAmount to PxrDisplace
+    Displace "PxrDisplace" "golfballDisp"
+        "float dispAmount" [0.1]  # will be overridden by reference
+        "reference float dispScalar" ["dimplePattern:dispAmount"]
+
+    Bxdf "PxrSurface" "PxrGolfBall"
+        # Red plastic base
+        "reference color diffuseColor" ["dimplePattern:shadowTint"]
+        "float diffuseGain" [1.0]
+        "float diffuseExponent" [0.0]
+
+        # Specular reflection (gloss)
+        "int specularFresnelMode" [1] #setting it 1 will ignore faceColor and fresnelExponent
+        "color specularIor" [1.5 1.5 1.5]
+
+        # Make dirt matte
+        "reference float specularRoughness" ["dimplePattern:roughnessMod"]
+
+        # Reduce specular where dirty
+        "color specularEdgeColor" [0.6 0.6 0.6]
+
+        # clear coat
+        "reference color clearcoatFaceColor" ["dimplePattern:clearcoatColor"]
+        "color clearcoatFaceColor" [0.015 0.015 0.015]    # Subtle gloss contribution
+        "color clearcoatEdgeColor" [0.25 0.25 0.25]    # Stronger at glancing angles
+        "float clearcoatRoughness" [0.03]            # Sharp highlight
+        "float clearcoatAnisotropy" [0.0]
+
+        # Enable bump-like shading from dimples
+        "int specularModelType" [1]  # GGX is better for rough surfaces
+
+    Sphere 1 -1 1 360
+
+AttributeEnd

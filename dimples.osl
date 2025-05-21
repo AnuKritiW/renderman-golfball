@@ -15,6 +15,7 @@ shader dimples(
     float dimple_radius = 0.105,
     float dimple_depth = 0.2,
     int numDimples = 377,
+    color baseColor = color(0.95, 0.27, 0.6),
     output float dispAmount = 0.0,
     output color shadowTint = color(1.0),
     output float roughnessMod = 0.0,
@@ -47,7 +48,6 @@ shader dimples(
     dispAmount -= bestFalloff * dimple_depth;
 
     // Shadow effect: darken color by 0.3× at dimple centers
-    color baseColor = color(0.95, 0.27, 0.6);      // match base color in .rib
     float shadowAmount = 1.0 - 0.3 * bestFalloff;
     // shadowTint = color(shadowAmount) * baseColor;  // Uniformly darken RGB channels
     shadowTint = baseColor;

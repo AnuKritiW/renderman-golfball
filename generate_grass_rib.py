@@ -8,8 +8,13 @@ import math
 x_range = (-10, 10)
 z_range = (-3, 8)
 y_base = -1.0
-min_height = 0.08
-max_height = 0.15
+# image 1
+# min_height = 0.08
+# max_height = 0.15
+
+# image 2
+min_height = 0.3
+max_height = 0.6
 
 patch_size = 2.0            # each patch covers a 2x2 area
 min_blades_per_patch = 100
@@ -138,8 +143,13 @@ for i in range(num_patches_x):
                 ]
                 p_str = " ".join([f"{v:.4f}" for v in p])
 
-                base_width = random.uniform(0.008, 0.012) # base is slightly thicker
-                tip_width = random.uniform(0.001, 0.003)  # tip is thinner
+                # image 1
+                # base_width = random.uniform(0.008, 0.012) # base is slightly thicker
+                # tip_width = random.uniform(0.001, 0.003)  # tip is thinner
+
+                # image 2
+                base_width = random.uniform(0.02, 0.035)
+                tip_width = random.uniform(0.005, 0.01)
 
                 # non periodic means it's an open curve (not looping)
                 f.write('\tCurves "cubic" [4] "nonperiodic"\n')

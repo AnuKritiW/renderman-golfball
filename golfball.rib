@@ -6,14 +6,22 @@ Display "golfball.exr" "openexr" "rgba"
 Format 1920 1080 1.0
 # Format 3840 2160 1.0 # 4k res
 
-Projection "perspective" "float fov" [45]
+# image 1
+# Projection "perspective" "float fov" [45]
+
+# image2
+Projection "perspective" "float fov" [30]
 
 Integrator "PxrPathTracer" "integrator"
 Hider "raytrace" "int incremental" [1] "int maxsamples" [16]
 PixelFilter "gaussian" 2 2
 
 WorldBegin
-    Translate 0 0 5
+    # image 1
+    # Translate 0 0 5
+    # image 2
+    Translate 0 -0.75 9.5
+    Rotate -45 1 0 0  # slight tilt upward
 
     AttributeBegin
         TransformBegin
@@ -134,63 +142,7 @@ WorldBegin
     # grass
     ReadArchive "include_all_patches.rib"
 
-    # golf ball
-    AttributeBegin
-        # Rotate -75 1 0 0
-
-        Attribute "displacementbound" "sphere" [0.1]
-        Attribute "dice" "float micropolygonlength" [0.5]
-
-        # 1. Call the OSL pattern shader to compute dispAmount
-        Pattern "dimples" "dimplePattern"
-            "float dimple_radius" [0.1]
-            "float dimple_depth" [0.25]
-            "int numDimples" [377]
-
-        # 2. Pass dispAmount to PxrDisplace
-        Displace "PxrDisplace" "golfballDisp"
-            "float dispAmount" [0.1]  # will be overridden by reference
-            "reference float dispScalar" ["dimplePattern:dispAmount"]
-
-        # For Testing without lights (e.g. checking dimples)
-        # Bxdf "PxrSurface" "PxrSurface1"
-        #     "color diffuseColor" [0.9 0.9 0.9]    # White ball
-        #     "float diffuseGain" [1]
-        #     "color specularFaceColor" [1 1 1]     # Shiny highlights
-
-        Bxdf "PxrSurface" "PxrGolfBall"
-            # Red plastic base
-            # "color diffuseColor" [0.95 0.27 0.6]   # pink
-            "reference color diffuseColor" ["dimplePattern:shadowTint"]
-            # "color diffuseColor" [0.85 0.0 0.0]  # red
-            "float diffuseGain" [1.0]
-            "float diffuseExponent" [0.0]
-
-            # Specular reflection (gloss)
-            "int specularFresnelMode" [1] #setting it 1 will ignore faceColor and fresnelExponent
-            # "float specularRoughness" [0.08]
-            # "color specularFaceColor" [0.25 0.25 0.25]
-            "color specularIor" [1.5 1.5 1.5]
-
-            # Make dirt matte
-            "reference float specularRoughness" ["dimplePattern:roughnessMod"]
-
-            # Reduce specular where dirty
-            "reference float specularFaceColor" ["dimplePattern:specularMod"]
-            "color specularEdgeColor" [0.6 0.6 0.6]
-
-            # clear coat
-            "reference color clearcoatFaceColor" ["dimplePattern:clearcoatColor"]
-            "color clearcoatFaceColor" [0.015 0.015 0.015]    # Subtle gloss contribution
-            "color clearcoatEdgeColor" [0.25 0.25 0.25]    # Stronger at glancing angles
-            "float clearcoatRoughness" [0.03]            # Sharp highlight
-            "float clearcoatAnisotropy" [0.0]
-
-            # Enable bump-like shading from dimples
-            "int specularModelType" [1]  # GGX is better for rough surfaces
-
-        Sphere 1 -1 1 360
-
-    AttributeEnd
+    ReadArchive "balls/all_balls.rib"
+    # ReadArchive "balls/single_ball.rib"
 
 WorldEnd

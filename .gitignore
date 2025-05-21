@@ -6,3 +6,6 @@ archive/
 grass_generated.rib
 include_all_patches.rib
 grass_patches/
+golfball.exr
+assets/*
+!assets/limpopo_golf_course_4k.tx

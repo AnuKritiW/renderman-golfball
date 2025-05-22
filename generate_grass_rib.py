@@ -5,8 +5,12 @@ import math
 # import colorsys
 
 # Parameters
-x_range = (-10, 10)
-z_range = (-3, 8)
+# image 1
+# x_range = (-10, 10)
+# z_range = (-3, 8)
+# image 2
+x_range = (-15, 15)
+z_range = (-3, 17)
 y_base = -1.0
 # image 1
 # min_height = 0.08
@@ -18,7 +22,10 @@ max_height = 0.6
 
 patch_size = 2.0            # each patch covers a 2x2 area
 min_blades_per_patch = 100
-max_blades_per_patch = 4000
+# image 1
+# max_blades_per_patch = 4000
+# image 2
+max_blades_per_patch = 2500
 
 output_dir = 'grass_patches'
 

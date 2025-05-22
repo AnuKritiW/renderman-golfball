@@ -47,10 +47,12 @@ shader dimples(
     // Apply dimple depth displacement
     dispAmount -= bestFalloff * dimple_depth;
 
+    // image 2
     // Shadow effect: darken color by 0.3× at dimple centers
-    float shadowAmount = 1.0 - 0.3 * bestFalloff;
-    // shadowTint = color(shadowAmount) * baseColor;  // Uniformly darken RGB channels
-    shadowTint = baseColor;
+    float shadowAmount = 1.0 - 0.25 * bestFalloff;
+    shadowTint = color(shadowAmount) * baseColor;  // Uniformly darken RGB channels
+    // image 1
+    // shadowTint = baseColor;
 
     // Raised surface = low falloff; dirt goes outside dimples
     float outerRegion = smoothstep(0.55, 0.6, 1.0 - bestFalloff);  // strongest when far from dimple center

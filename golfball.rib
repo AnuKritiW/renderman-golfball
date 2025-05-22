@@ -10,7 +10,7 @@ Format 1920 1080 1.0
 # Projection "perspective" "float fov" [45]
 
 # image2
-Projection "perspective" "float fov" [30]
+Projection "perspective" "float fov" [40]
 
 Integrator "PxrPathTracer" "integrator"
 Hider "raytrace" "int incremental" [1] "int maxsamples" [16]
@@ -20,15 +20,13 @@ WorldBegin
     # image 1
     # Translate 0 0 5
     # image 2
-    Translate 0 -0.75 9.5
-    Rotate -45 1 0 0  # slight tilt upward
+    Translate 0 -0.5 8.7
+    Rotate -35 1 0 0  # slight tilt upward
 
     AttributeBegin
         TransformBegin
-            # Rotate -120 0 1 0
             Light "PxrDomeLight" "domeLight"
                 "string lightColorMap" ["./assets/limpopo_golf_course_4k.tx"]
-                # "float intensity" [0.5]
                 "float exposure" [-1.0]    # 1 stop darker
         TransformEnd
     AttributeEnd
@@ -133,10 +131,16 @@ WorldBegin
         Bxdf "PxrSurface" "PxrGroundSurface"
             "color diffuseColor" [0.071 0.039 0.0]
             "float diffuseGain" [1]
-        Polygon "P" [-10 -1.05 8
-                      10 -1.05 8
-                      10 -1.05 -3
-                     -10 -1.05 -3]
+        # image 1
+        # Polygon "P" [-10 -1.05 8
+        #               10 -1.05 8
+        #               10 -1.05 -3
+        #              -10 -1.05 -3]
+        # image 2
+        Polygon "P" [-15 -1.05 17
+                      15 -1.05 17
+                      15 -1.05 -3
+                     -15 -1.05 -3]
     AttributeEnd
 
     # grass

@@ -1,0 +1,132 @@
+# golfball.rib
+Option "searchpath" "shader" ["./"]
+
+# Display "golfball.exr" "it" "rgba"
+Display "golfball.exr" "openexr" "rgba"
+Format 1920 1080 1.0
+# Format 3840 2160 1.0 # 4k res
+
+# image 1
+# Projection "perspective" "float fov" [45]
+
+# image2
+Projection "perspective" "float fov" [40]
+
+Integrator "PxrPathTracer" "integrator"
+Hider "raytrace" "int incremental" [1] "int maxsamples" [16]
+PixelFilter "gaussian" 2 2
+
+WorldBegin
+    # image 1
+    # Translate 0 0 5
+    # image 2
+    Translate 0 -0.5 8.7
+    Rotate -35 1 0 0  # slight tilt upward
+
+    AttributeBegin
+        TransformBegin
+            Light "PxrDomeLight" "domeLight"
+                "string lightColorMap" ["./assets/limpopo_golf_course_4k.tx"]
+                "float exposure" [-1.0]    # 1 stop darker
+        TransformEnd
+    AttributeEnd
+
+    # Shared 3-light rig for all balls
+    AttributeBegin
+        Attribute "visibility" "int camera" [0] "int indirect" [0] "int transmission" [1]
+
+        # Key light — front-left, high
+        TransformBegin
+            Translate -3 5 4
+            Light "PxrSphereLight" "sharedKey"
+                "float intensity" [5.0]
+                "float exposure" [0.0]
+                "int enableShadows" [1]
+                "color shadowColor" [0 0 0]
+                "color lightColor" [1.0 1.0 1.0]
+        TransformEnd
+
+        # Fill light — front-right, low (green)
+        TransformBegin
+            # Translate 5 1 3
+            Translate 5.5 1.25 2.5
+            Light "PxrSphereLight" "sharedFill"
+                "float intensity" [1.5]
+                "float exposure" [-0.5]
+                "int enableShadows" [0]
+                "color lightColor" [1.0 1.0 1.0]
+        TransformEnd
+
+        # Dimple lift - left to the pink ball
+        TransformBegin
+            Translate -2.0 2.0 -1.0
+            Light "PxrSphereLight" "dimpleSoft"
+                "float intensity" [1.8]
+                "float exposure" [0.0]
+                "int enableShadows" [1]
+                "color lightColor" [1.0 1.0 1.0]
+        TransformEnd
+
+        # Fill light - back right, low (blue)
+        TransformBegin
+            Translate 0.5 1 7.25
+            Light "PxrSphereLight" "sharedFill"
+                "float intensity" [1.5]
+                "float exposure" [-0.5]
+                "int enableShadows" [0]
+                "color lightColor" [1.0 1.0 1.0]
+        TransformEnd
+
+        # Light to soften shadows on pink ball
+        TransformBegin
+            Translate 0.0 1.0 -1.5  # Position: right and a bit in front
+            Rotate -30 1 0 0        # Tilt upward slightly
+            Rotate -45 0 1 0        # Aim slightly left
+
+            Light "PxrDiskLight" "pinkFill"
+                "float intensity" [7.0]
+                "float exposure" [-1.0]
+                "float emissionFocus" [0.1]
+                "int enableShadows" [0]
+                "color lightColor" [1.0 1.0 1.0]
+        TransformEnd
+
+        # Light to soften shadows on green ball
+        TransformBegin
+            Translate 3.5 0.75 -0.25  # Position: right and a bit in front
+            Rotate -45 0 1 0        # Aim slightly left
+
+            Light "PxrDiskLight" "greenFill"
+                "float intensity" [5.0]
+                "float exposure" [-1.0]
+                "float emissionFocus" [0.1]
+                "int enableShadows" [0]
+                "color lightColor" [1.0 1.0 1.0]
+        TransformEnd
+
+    AttributeEnd
+
+    # ground plane
+    AttributeBegin
+        Bxdf "PxrSurface" "PxrGroundSurface"
+            "color diffuseColor" [0.071 0.039 0.0]
+            "float diffuseGain" [1]
+        # image 1
+        # Polygon "P" [-10 -1.05 8
+        #               10 -1.05 8
+        #               10 -1.05 -3
+        #              -10 -1.05 -3]
+        # image 2
+        Polygon "P" [-15 -1.05 17
+                      15 -1.05 17
+                      15 -1.05 -3
+                     -15 -1.05 -3]
+    AttributeEnd
+
+    # grass
+    ReadArchive "include_all_patches.rib"
+
+    ReadArchive "balls/all_balls.rib"
+    # ReadArchive "balls/single_ball.rib"
+
+WorldEnd

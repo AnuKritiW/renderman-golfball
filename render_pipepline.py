@@ -1,4 +1,6 @@
 import subprocess
+from generate_balls import generate_balls
+from gen_dimple_centers import generate_dimple_centers
 
 def compile_shader(shader_name="dimples.osl"):
     print(f"📦 Compiling shader: {shader_name}")
@@ -8,9 +10,11 @@ def generate_grass(python_file="generate_grass_rib.py", image=2):
     print(f"🌱 Generating Grass for Image {image}")
     subprocess.run(["python3", python_file, "--image", str(image)], check=True)
 
-def generate_balls(python_file="generate_balls.py"):
-    print(f"⛳ Generating Balls: {python_file}")
-    subprocess.run(["python3", python_file], check=True)
+def generate_balls_in_pipeline(num_dimples=377):
+    print(f"⛳ Generating {num_dimples} Dimple Centers")
+    generate_dimple_centers(num_dimples=num_dimples)
+    print(f"⛳ Generating Balls with {num_dimples} dimples")
+    generate_balls(num_dimples=num_dimples, mode="both")  # or "single", "all" as needed
 
 def render_scene(rib_file="golfball.rib"):
     print(f"🎬 Rendering scene: {rib_file}")
@@ -27,7 +31,7 @@ def main():
     generate_grass("generate_grass_rib.py", image=1)
     generate_grass("generate_grass_rib.py", image=2)
 
-    generate_balls("generate_balls.py")
+    generate_balls_in_pipeline(num_dimples=400)
 
     # Render scenes that use different grass sets
     render_scene("golfball.rib")

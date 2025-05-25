@@ -111,7 +111,7 @@ WorldBegin
     AttributeEnd
 
     # grass
-    ReadArchive "include_all_patches.rib"
+    ReadArchive "grass_patches_image2/include_all_patches.rib"
 
     ReadArchive "balls/all_balls.rib"
 

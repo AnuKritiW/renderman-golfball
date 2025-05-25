@@ -130,7 +130,7 @@ WorldBegin
     AttributeEnd
 
     # grass
-    ReadArchive "include_all_patches.rib"
+    ReadArchive "grass_patches_image1/include_all_patches.rib"
 
     ReadArchive "balls/single_ball.rib"
 

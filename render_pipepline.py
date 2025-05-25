@@ -2,14 +2,16 @@ import subprocess
 from generate_balls import generate_balls
 from gen_dimple_centers import generate_dimple_centers
 from generate_scenes import generate_scene_rib
+from generate_grass_rib import generate_grass
+
 
 def compile_shader(shader_name="dimples.osl"):
     print(f"📦 Compiling shader: {shader_name}")
     subprocess.run(["oslc", shader_name], check=True)
 
-def generate_grass(python_file="generate_grass_rib.py", image=2):
-    print(f"🌱 Generating Grass for Image {image}")
-    subprocess.run(["python3", python_file, "--image", str(image)], check=True)
+def generate_grass_in_pipeline(image):
+    print(f"🌱 Generating grass for image {image}")
+    generate_grass(image=image)
 
 def generate_balls_in_pipeline(num_dimples=377):
     print(f"⛳ Generating {num_dimples} Dimple Centers")
@@ -17,7 +19,7 @@ def generate_balls_in_pipeline(num_dimples=377):
     print(f"⛳ Generating Balls with {num_dimples} dimples")
     generate_balls(num_dimples=num_dimples, mode="both")  # or "single", "all" as needed
 
-def render_scene(rib_file="golfball.rib"):
+def render_scene(rib_file):
     print(f"🎬 Rendering scene: {rib_file}")
     subprocess.run(["prman", rib_file], check=True)
 
@@ -33,8 +35,8 @@ def main():
     compile_shader("dimples.osl")
 
     # Generate grass for both images (image 1 and image 2)
-    generate_grass("generate_grass_rib.py", image=1)
-    generate_grass("generate_grass_rib.py", image=2)
+    generate_grass_in_pipeline(image=1)
+    generate_grass_in_pipeline(image=2)
 
     generate_balls_in_pipeline(num_dimples=num_dimples)
 

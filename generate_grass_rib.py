@@ -2,11 +2,10 @@ import random
 import os
 import shutil
 import math
-import argparse
 
-def generate_grass(use_image2):
+def generate_grass(image=1):
     # Parameters based on image selection
-    if use_image2:
+    if (image == 2):
         x_range = (-15, 15)
         z_range = (-3, 17)
         min_height = 0.3
@@ -126,13 +125,3 @@ AttributeBegin
             f.write(f'ReadArchive "{path}"\n')
 
     print(f"Generated grass patches in {output_dir}")
-
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--image", type=int, choices=[1, 2], default=2)
-    args = parser.parse_args()
-    use_image2 = (args.image == 2)
-    generate_grass(use_image2)
-
-if __name__ == "__main__":
-    main()

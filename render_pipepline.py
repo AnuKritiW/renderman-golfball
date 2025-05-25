@@ -4,7 +4,9 @@ from generate_dimple_centers import generate_dimple_centers
 from generate_scenes import generate_scene
 from generate_grass import generate_grass
 
-def compile_shader(shader_name="dimples.osl"):
+def compile_shader(shader_name="dimples.osl", num_dimples=377):
+    print(f"⛳ Generating {num_dimples} Dimple Centers")
+    generate_dimple_centers(num_dimples=num_dimples)
     print(f"📦 Compiling shader: {shader_name}")
     subprocess.run(["oslc", shader_name], check=True)
 
@@ -13,8 +15,6 @@ def generate_grass_in_pipeline(image):
     generate_grass(image=image)
 
 def generate_balls_in_pipeline(num_dimples=377):
-    print(f"⛳ Generating {num_dimples} Dimple Centers")
-    generate_dimple_centers(num_dimples=num_dimples)
     print(f"⛳ Generating Balls with {num_dimples} dimples")
     generate_balls(num_dimples=num_dimples, mode="both")  # or "single", "all" as needed
 
@@ -31,7 +31,7 @@ def main():
     resolution = "HD"  # Options: "HD", "4K", "8K"
     samples = 16
 
-    compile_shader("dimples.osl")
+    compile_shader("dimples.osl", num_dimples=num_dimples)
 
     # Generate grass for both images (image 1 and image 2)
     generate_grass_in_pipeline(image=1)

@@ -1,0 +1,7 @@
+AttributeBegin
+    TransformBegin
+        Light "PxrDomeLight" "domeLight"
+            "string lightColorMap" ["./assets/limpopo_golf_course_4k.tx"]
+            "float exposure" [-1.0]    # 1 stop darker
+    TransformEnd
+AttributeEnd

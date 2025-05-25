@@ -4,5 +4,12 @@ archive/
 *.oslinclude
 *.nfs*
 grass_generated.rib
-include_all_patches.rib
-grass_patches/
+grass_patches_*/
+*.exr
+assets/*
+!assets/limpopo_golf_course_4k.tx
+balls/
+final_renders/
+*.bk
+__pycache__/
+scenes/

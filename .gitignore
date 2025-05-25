@@ -5,10 +5,11 @@ archive/
 *.nfs*
 grass_generated.rib
 grass_patches_*/
-golfball-*.exr
+*.exr
 assets/*
 !assets/limpopo_golf_course_4k.tx
 balls/
 final_renders/
 *.bk
 __pycache__/
+scenes/

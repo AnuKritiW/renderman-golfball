@@ -39,15 +39,15 @@ def main():
     generate_balls_in_pipeline(num_dimples=num_dimples)
 
     # Generate scene RIBs dynamically
-    generate_scene_rib("golfball.rib", resolution=resolution, samples=samples, image_num=1)
-    generate_scene_rib("golfball-3.rib", resolution=resolution, samples=samples, image_num=2)
+    generate_scene_rib("scene_1.rib", resolution=resolution, samples=samples, image_num=1)
+    generate_scene_rib("scene_2.rib", resolution=resolution, samples=samples, image_num=2)
 
     # Render scenes that use different grass sets
-    render_scene("golfball.rib")
-    render_scene("golfball-3.rib")
+    render_scene("scenes/scene_1.rib")
+    render_scene("scenes/scene_2.rib")
 
     # Open corresponding renders in 'it'
-    open_in_it("golfball-1.exr", "golfball-2.exr")
+    open_in_it("scene_1.exr", "scene_2.exr")
 
 if __name__ == "__main__":
     main()

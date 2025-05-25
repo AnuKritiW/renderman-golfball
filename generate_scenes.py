@@ -1,4 +1,6 @@
 # generate_scenes.py
+import os
+
 RESOLUTIONS = {
     "HD": (1920, 1080),
     "4K": (3840, 2160),
@@ -7,12 +9,17 @@ RESOLUTIONS = {
 
 def generate_scene_rib(filename, resolution="HD", samples=16, image_num=1):
     width, height = RESOLUTIONS.get(resolution, RESOLUTIONS["HD"])
-    exr_output = "golfball-1.exr" if image_num == 1 else "golfball-2.exr"
+    exr_output = "scene_1.exr" if image_num == 1 else "scene_2.exr"
     grass_archive = "grass_patches_image1/include_all_patches.rib" if image_num == 1 else "grass_patches_image2/include_all_patches.rib"
     ball_archive = "balls/single_ball.rib" if image_num == 1 else "balls/all_balls.rib"
     fov = 45 if image_num == 1 else 40
 
-    # Different camera and lighting setups for image 1 and 3
+    # Output directory
+    output_dir = "scenes"
+    os.makedirs(output_dir, exist_ok=True)
+    filepath = os.path.join(output_dir, filename)
+
+    # Scene-specific settings
     if image_num == 1:
         world_transform = """
 \tTranslate 0 0 5
@@ -47,7 +54,7 @@ def generate_scene_rib(filename, resolution="HD", samples=16, image_num=1):
 \tAttributeEnd
 """
 
-    rib_content = f"""# Generated scene RIB for golfball-{image_num}
+    rib_content = f"""# Generated scene RIB for scene_{image_num}
 Option "searchpath" "shader" ["./"]
 
 Display "{exr_output}" "openexr" "rgba"
@@ -71,10 +78,10 @@ WorldBegin
 
 WorldEnd
 """
-    with open(filename, "w") as f:
+    with open(filepath, "w") as f:
         f.write(rib_content)
-    print(f"Generated {filename} with resolution {resolution} and samples {samples}")
+    print(f"Generated {filepath} with resolution {resolution} and samples {samples}")
 
 if __name__ == "__main__":
-    generate_scene_rib("golfball.rib", resolution="HD", samples=16, image_num=1)
-    generate_scene_rib("golfball-3.rib", resolution="HD", samples=16, image_num=2)
+    generate_scene_rib("scene_1.rib", resolution="HD", samples=16, image_num=1)
+    generate_scene_rib("scene_2.rib", resolution="HD", samples=16, image_num=2)

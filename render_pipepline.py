@@ -1,6 +1,7 @@
 import subprocess
 from generate_balls import generate_balls
 from gen_dimple_centers import generate_dimple_centers
+from generate_scenes import generate_scene_rib
 
 def compile_shader(shader_name="dimples.osl"):
     print(f"📦 Compiling shader: {shader_name}")
@@ -25,13 +26,21 @@ def open_in_it(*exr_files):
     subprocess.run(["it", *exr_files], check=True)
 
 def main():
+    num_dimples = 400
+    resolution = "HD"  # Options: "HD", "4K", "8K"
+    samples = 16
+
     compile_shader("dimples.osl")
 
     # Generate grass for both images (image 1 and image 2)
     generate_grass("generate_grass_rib.py", image=1)
     generate_grass("generate_grass_rib.py", image=2)
 
-    generate_balls_in_pipeline(num_dimples=400)
+    generate_balls_in_pipeline(num_dimples=num_dimples)
+
+    # Generate scene RIBs dynamically
+    generate_scene_rib("golfball.rib", resolution=resolution, samples=samples, image_num=1)
+    generate_scene_rib("golfball-3.rib", resolution=resolution, samples=samples, image_num=2)
 
     # Render scenes that use different grass sets
     render_scene("golfball.rib")

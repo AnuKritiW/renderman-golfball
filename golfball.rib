@@ -1,27 +1,19 @@
 # golfball.rib
 Option "searchpath" "shader" ["./"]
 
-# Display "golfball.exr" "it" "rgba"
-Display "golfball.exr" "openexr" "rgba"
+Display "golfball-1.exr" "openexr" "rgba"
 Format 1920 1080 1.0
 # Format 3840 2160 1.0 # 4k res
 
-# image 1
-# Projection "perspective" "float fov" [45]
-
-# image2
-Projection "perspective" "float fov" [40]
+Projection "perspective" "float fov" [45]
 
 Integrator "PxrPathTracer" "integrator"
 Hider "raytrace" "int incremental" [1] "int maxsamples" [16]
 PixelFilter "gaussian" 2 2
+PixelVariance 0.001
 
 WorldBegin
-    # image 1
-    # Translate 0 0 5
-    # image 2
-    Translate 0 -0.5 8.7
-    Rotate -35 1 0 0  # slight tilt upward
+    Translate 0 0 5
 
     AttributeBegin
         TransformBegin
@@ -131,22 +123,15 @@ WorldBegin
         Bxdf "PxrSurface" "PxrGroundSurface"
             "color diffuseColor" [0.071 0.039 0.0]
             "float diffuseGain" [1]
-        # image 1
-        # Polygon "P" [-10 -1.05 8
-        #               10 -1.05 8
-        #               10 -1.05 -3
-        #              -10 -1.05 -3]
-        # image 2
-        Polygon "P" [-15 -1.05 17
-                      15 -1.05 17
-                      15 -1.05 -3
-                     -15 -1.05 -3]
+        Polygon "P" [-10 -1.05 8
+                      10 -1.05 8
+                      10 -1.05 -3
+                     -10 -1.05 -3]
     AttributeEnd
 
     # grass
     ReadArchive "include_all_patches.rib"
 
-    ReadArchive "balls/all_balls.rib"
-    # ReadArchive "balls/single_ball.rib"
+    ReadArchive "balls/single_ball.rib"
 
 WorldEnd

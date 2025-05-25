@@ -26,7 +26,9 @@ def main():
     generate_grass("generate_grass_rib.py")
     generate_balls("generate_balls.py")
     render_scene("golfball.rib")
-    open_in_it("golfball.exr")
+    render_scene("golfball-3.rib")
+    open_in_it("golfball-1.exr")
+    open_in_it("golfball-2.exr")
 
 if __name__ == "__main__":
     main()

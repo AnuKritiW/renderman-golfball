@@ -1,9 +1,8 @@
 import subprocess
 from generate_balls import generate_balls
-from gen_dimple_centers import generate_dimple_centers
-from generate_scenes import generate_scene_rib
-from generate_grass_rib import generate_grass
-
+from generate_dimple_centers import generate_dimple_centers
+from generate_scenes import generate_scene
+from generate_grass import generate_grass
 
 def compile_shader(shader_name="dimples.osl"):
     print(f"📦 Compiling shader: {shader_name}")
@@ -41,8 +40,8 @@ def main():
     generate_balls_in_pipeline(num_dimples=num_dimples)
 
     # Generate scene RIBs dynamically
-    generate_scene_rib("scene_1.rib", resolution=resolution, samples=samples, image_num=1)
-    generate_scene_rib("scene_2.rib", resolution=resolution, samples=samples, image_num=2)
+    generate_scene("scene_1.rib", resolution=resolution, samples=samples, image_num=1)
+    generate_scene("scene_2.rib", resolution=resolution, samples=samples, image_num=2)
 
     # Render scenes that use different grass sets
     render_scene("scenes/scene_1.rib")

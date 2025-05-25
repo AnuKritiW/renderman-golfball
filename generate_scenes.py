@@ -7,7 +7,7 @@ RESOLUTIONS = {
     "8K": (7680, 4320)
 }
 
-def generate_scene_rib(filename, resolution="HD", samples=16, image_num=1):
+def generate_scene(filename, resolution="HD", samples=16, image_num=1):
     width, height = RESOLUTIONS.get(resolution, RESOLUTIONS["HD"])
     exr_output = "scene_1.exr" if image_num == 1 else "scene_2.exr"
     grass_archive = "grass_patches_image1/include_all_patches.rib" if image_num == 1 else "grass_patches_image2/include_all_patches.rib"

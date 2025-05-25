@@ -18,6 +18,7 @@ AttributeBegin
             "float dimple_depth" [0.25]
             "int numDimples" [377]
             "color baseColor" [{r} {g} {b}]
+            "int useShadowDarken" [1]
 
         Displace "PxrDisplace" "golfballDisp{name}"
             "float dispAmount" [0.1]

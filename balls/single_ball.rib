@@ -9,6 +9,7 @@ AttributeBegin
         "float dimple_depth" [0.25]
         "int numDimples" [377]
         "color baseColor" [0.95 0.27 0.6] # pink
+        "int useShadowDarken" [0]
 
     # 2. Pass dispAmount to PxrDisplace
     Displace "PxrDisplace" "golfballDisp"

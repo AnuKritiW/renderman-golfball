@@ -9,7 +9,7 @@
        - procedural dirt around dimple rims using noise
 */
 
-#include "dimple_centers.oslinclude"
+#include "generated/dimple_centers.oslinclude"
 
 shader dimples(
     float dimple_radius = 0.105,
@@ -64,7 +64,6 @@ shader dimples(
     dirtNoise = smoothstep(0.4, 0.6, dirtNoise); // Threshold for blotchiness
 
     float dirtLocation = 0.0;
-    // int dirtIndices[3] = { 87, 180, 320 };  // Chosen to be spaced out
 
     point dirtCenters[3] = {
         point(-0.766084, 0.574468, -0.893861),  // top-left-front
@@ -84,14 +83,6 @@ shader dimples(
         float patch = 1.0 - smoothstep(noisyRadius - 0.05, noisyRadius + 0.05, dist);
         dirtLocation = max(dirtLocation, patch);
     }
-
-    // vector dirtCenter = vector(-0.766084, 0.574468, -0.893861);  // front center
-    // float distToPatch = distance(pos, dirtCenter);
-
-    // // Hard threshold mask
-    // float jitter = noise("perlin", pos * 25);
-    // float noisyRadius = 0.5 + jitter * 0.15;
-    // float dirtLocation = 1.0 - smoothstep(noisyRadius - 0.05, noisyRadius + 0.05, distToPatch);
 
     float dirtMask = clamp(outerRegion * dirtNoise * dirtLocation * 1.5, 0.0, 1.0); // Combine shape and noise
 

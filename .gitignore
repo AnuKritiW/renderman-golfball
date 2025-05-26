@@ -7,10 +7,7 @@ final_renders/
 __pycache__/
 
 src/*.oso
-src/*.oslinclude
 src/*.nfs*
-src/grass_patches_*/
 src/*.exr
-src/balls/
 src/__pycache__/
-src/scenes/
+src/generated

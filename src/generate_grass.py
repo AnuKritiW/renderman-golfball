@@ -3,7 +3,7 @@ import os
 import shutil
 import math
 
-def generate_grass(image=1):
+def generate_grass(image=1, base_dir="generated"):
     # Parameters based on image selection
     if (image == 2):
         x_range = (-15, 15)
@@ -13,7 +13,7 @@ def generate_grass(image=1):
         max_blades_per_patch = 2500
         base_width_range = (0.02, 0.035)
         tip_width_range = (0.005, 0.01)
-        output_dir = 'grass_patches_image2'
+        subdir = 'grass_patches_image2'
     else:
         x_range = (-10, 10)
         z_range = (-3, 8)
@@ -22,7 +22,11 @@ def generate_grass(image=1):
         max_blades_per_patch = 4000
         base_width_range = (0.008, 0.012)
         tip_width_range = (0.001, 0.003)
-        output_dir = 'grass_patches_image1'
+        subdir = 'grass_patches_image1'
+
+    # Construct full output path
+    output_dir = os.path.join(base_dir, subdir)
+    os.makedirs(output_dir, exist_ok=True)
 
     y_base = -1.0
     patch_size = 2.0            # each patch covers a 2x2 area

@@ -1,73 +1,72 @@
-# generate_balls.py
 import random
 import os
 
 BALL_TEMPLATE = """
 AttributeBegin
-    TransformBegin
-        Translate {x} 0.0 {z}
-        Rotate {rot_x:.2f} 1 0 0
-        Rotate {rot_y:.2f} 0 1 0
-        Rotate {rot_z:.2f} 0 0 1
+\tTransformBegin
+\t\tTranslate {x} 0.0 {z}
+\t\tRotate {rot_x:.2f} 1 0 0
+\t\tRotate {rot_y:.2f} 0 1 0
+\t\tRotate {rot_z:.2f} 0 0 1
 
-        Attribute "displacementbound" "sphere" [0.1]
-        Attribute "dice" "float micropolygonlength" [0.5]
+\t\tAttribute "displacementbound" "sphere" [0.1]
+\t\tAttribute "dice" "float micropolygonlength" [0.5]
 
-        # 1. Call the OSL pattern shader to compute dispAmount
-        Pattern "dimples" "dimplePattern{name}"
-            "float dimple_radius" [0.1]
-            "float dimple_depth" [0.25]
-            "int numDimples" [{num_dimples}]
-            "color baseColor" [{r} {g} {b}]
-            "int useShadowDarken" [{shadow_darken}]
+\t\t# 1. Call the OSL pattern shader to compute dispAmount
+\t\tPattern "dimples" "dimplePattern{name}"
+\t\t\t"float dimple_radius" [0.1]
+\t\t\t"float dimple_depth" [0.25]
+\t\t\t"int numDimples" [{num_dimples}]
+\t\t\t"color baseColor" [{r} {g} {b}]
+\t\t\t"int useShadowDarken" [{shadow_darken}]
 
-        # 2. Pass dispAmount to PxrDisplace
-        Displace "PxrDisplace" "golfballDisp{name}"
-            "float dispAmount" [0.1]
-            "reference float dispScalar" ["dimplePattern{name}:dispAmount"]
+\t\t# 2. Pass dispAmount to PxrDisplace
+\t\tDisplace "PxrDisplace" "golfballDisp{name}"
+\t\t\t"float dispAmount" [0.1]
+\t\t\t"reference float dispScalar" ["dimplePattern{name}:dispAmount"]
 
-        Bxdf "PxrSurface" "PxrGolfBall{name}"
-            # Plastic base
-            "reference color diffuseColor" ["dimplePattern{name}:shadowTint"]
-            "float diffuseGain" [1.0]
-            "float diffuseExponent" [0.0]
+\t\tBxdf "PxrSurface" "PxrGolfBall{name}"
+\t\t\t# Plastic base
+\t\t\t"reference color diffuseColor" ["dimplePattern{name}:shadowTint"]
+\t\t\t"float diffuseGain" [1.0]
+\t\t\t"float diffuseExponent" [0.0]
 
-            # Specular reflection (gloss)
-            "int specularFresnelMode" [1] #setting it 1 will ignore faceColor and fresnelExponent
-            "color specularIor" [1.5 1.5 1.5]
+\t\t\t# Specular reflection (gloss)
+\t\t\t"int specularFresnelMode" [1] #setting it 1 will ignore faceColor and fresnelExponent
+\t\t\t"color specularIor" [1.5 1.5 1.5]
 
-            # Make dirt matte
-            "reference float specularRoughness" ["dimplePattern{name}:roughnessMod"]
+\t\t\t# Make dirt matte
+\t\t\t"reference float specularRoughness" ["dimplePattern{name}:roughnessMod"]
 
-            # Reduce specular where dirty
-            "color specularEdgeColor" [0.6 0.6 0.6]
-            "reference color clearcoatFaceColor" ["dimplePattern{name}:clearcoatColor"]
+\t\t\t# Reduce specular where dirty
+\t\t\t"color specularEdgeColor" [0.6 0.6 0.6]
+\t\t\t"reference color clearcoatFaceColor" ["dimplePattern{name}:clearcoatColor"]
 
-            # clear coat
-            "color clearcoatFaceColor" [0.015 0.015 0.015]  # Subtle gloss contribution
-            "color clearcoatEdgeColor" [0.25 0.25 0.25]     # Stronger at glancing angles
-            "float clearcoatRoughness" [0.03]               # Sharp highlight
-            "float clearcoatAnisotropy" [0.0]
+\t\t\t# clear coat
+\t\t\t"color clearcoatFaceColor" [0.015 0.015 0.015]  # Subtle gloss contribution
+\t\t\t"color clearcoatEdgeColor" [0.25 0.25 0.25]     # Stronger at glancing angles
+\t\t\t"float clearcoatRoughness" [0.03]               # Sharp highlight
+\t\t\t"float clearcoatAnisotropy" [0.0]
 
-            # Enable bump-like shading from dimples
-            "int specularModelType" [1] # GGX is better for rough surfaces
+\t\t\t# Enable bump-like shading from dimples
+\t\t\t"int specularModelType" [1] # GGX is better for rough surfaces
 
-        Sphere 1 -1 1 360
-    TransformEnd
+\t\tSphere 1 -1 1 360
+\tTransformEnd
 AttributeEnd
 """
 
 # Abstracted common colors
 PINK_COLOR = (0.95, 0.27, 0.6)
 PINK_XZ_TRANS = (0.0, 0.0)
-# You could also define other common colors here if needed.
 
-def generate_balls(num_dimples, mode="both"):
-    os.makedirs("balls", exist_ok=True)
+def generate_balls(num_dimples, mode="both", base_dir="generated"):
+    output_dir = os.path.join(base_dir, "balls")
+    os.makedirs(output_dir, exist_ok=True)
 
     if mode in ("single", "both"):
         # Single pink ball (image 1)
-        fpath = "balls/single_ball.rib"
+        fpath = os.path.join(output_dir, "single_ball.rib")
         with open(fpath, "w") as f:
             f.write(BALL_TEMPLATE.format(
                 name="",
@@ -87,7 +86,7 @@ def generate_balls(num_dimples, mode="both"):
             ("Green", 4.0, 1.5, (0.082, 0.859, 0.082)),
         ]
 
-        fpath = "balls/all_balls.rib"
+        fpath = os.path.join(output_dir, "all_balls.rib")
         with open(fpath, "w") as f:
             for name, x, z, (r, g, b) in balls:
                 rot_x = rot_y = rot_z = 0.0

@@ -2,6 +2,7 @@ venv/
 archive/
 *.nfs*
 *.exr
+!assets/*.exr
 final_renders/
 *.bk
 __pycache__/

@@ -38,13 +38,17 @@ This project demonstrates a procedural approach to modeling, shading, and scene 
 
     A Python script generates multiple golf ball instances with random rotations and varied colors, enhancing realism and visual interest in the second render. The pink ball remains unrotated to serve as a focal point, maintaining consistency with the single-ball render.
 
+Read the full report [here](./assets/report.pdf).
+
 ## Project Structure
 
 ```
 renderman-golfball/
 ├── assets/
-│   ├── scene_1-4k-1024.png         # Sample scene 1 render
-│   ├── scene_2-4k-1024.png         # Sample scene 2 render
+│   ├── scene_1-4k-1024.png         # Sample scene 1 4K png render
+│   ├── scene_2-4k-1024.png         # Sample scene 2 4K png render
+│   ├── scene_1-HD-1024.exr         # Sample scene 1 HD exr render
+│   ├── scene_2-HD-1024.exr         # Sample scene 2 HD exr render
 |   ├── report.pdf                  # Report outlining the work done in this project
 ├── src/
 │   ├── lighting/                   # Lighting RIB files
@@ -82,8 +86,8 @@ renderman-golfball/
 3. If you would like to change the render settings, adjust the constants in `src/render_pipeline.py`
 
     ```python
-    num_dimples = 400
-    resolution = "4K"  # Options: "HD", "4K", "8K"
+    num_dimples = 377
+    resolution = "HD"  # Options: "HD", "4K", "8K"
     samples = 1024
     ```
 

@@ -28,8 +28,8 @@ def open_in_it(*exr_files):
     subprocess.run(["it", *exr_files], check=True)
 
 def main():
-    num_dimples = 400
-    resolution = "4K"  # Options: "HD", "4K", "8K"
+    num_dimples = 377
+    resolution = "HD"  # Options: "HD", "4K", "8K"
     samples = 1024
 
     base_dir = "generated"

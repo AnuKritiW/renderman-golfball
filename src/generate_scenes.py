@@ -1,4 +1,3 @@
-# generate_scenes.py
 import os
 
 RESOLUTIONS = {
@@ -7,15 +6,15 @@ RESOLUTIONS = {
     "8K": (7680, 4320)
 }
 
-def generate_scene(filename, resolution="HD", samples=16, image_num=1):
+def generate_scene(filename, resolution="HD", samples=16, image_num=1, base_dir="generated"):
     width, height = RESOLUTIONS.get(resolution, RESOLUTIONS["HD"])
-    exr_output = "scene_1.exr" if image_num == 1 else "scene_2.exr"
-    grass_archive = "grass_patches_image1/include_all_patches.rib" if image_num == 1 else "grass_patches_image2/include_all_patches.rib"
-    ball_archive = "balls/single_ball.rib" if image_num == 1 else "balls/all_balls.rib"
+    exr_output = os.path.join(base_dir, f"scene_{image_num}.exr")
+    grass_archive = os.path.join(base_dir, f"grass_patches_image{image_num}/include_all_patches.rib")
+    ball_archive = os.path.join(base_dir, "balls/single_ball.rib") if image_num == 1 else os.path.join(base_dir, "balls/all_balls.rib")
     fov = 45 if image_num == 1 else 40
 
     # Output directory
-    output_dir = "scenes"
+    output_dir = os.path.join(base_dir, "scenes")
     os.makedirs(output_dir, exist_ok=True)
     filepath = os.path.join(output_dir, filename)
 
@@ -81,7 +80,3 @@ WorldEnd
     with open(filepath, "w") as f:
         f.write(rib_content)
     print(f"Generated {filepath} with resolution {resolution} and samples {samples}")
-
-if __name__ == "__main__":
-    generate_scene_rib("scene_1.rib", resolution="HD", samples=16, image_num=1)
-    generate_scene_rib("scene_2.rib", resolution="HD", samples=16, image_num=2)

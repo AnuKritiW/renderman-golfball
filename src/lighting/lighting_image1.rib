@@ -12,7 +12,6 @@ AttributeBegin
     TransformEnd
 AttributeEnd
 
-# 3 point light rig
 AttributeBegin
     # Key light — front-left (main shape/shine)
     Attribute "visibility" "int camera" [0] "int indirect" [0] "int transmission" [1]

@@ -1,6 +1,6 @@
 # Renderman Golfball
 
-<p align="center"> <img src="assets/scene_1-4k-1024.png" alt="Scene 1" width="45%"/> <img src="assets/scene_2-4k-1024.png" alt="Scene 2" width="45%"/> </p>
+<p align="center"> <img src="assets/4K_images/scene_1-4k-1024.png" alt="Scene 1" width="45%"/> <img src="assets/4K_images/scene_2-4k-1024.png" alt="Scene 2" width="45%"/> </p>
 
 ## Overview
 
@@ -38,38 +38,38 @@ This project demonstrates a procedural approach to modeling, shading, and scene 
 
     A Python script generates multiple golf ball instances with random rotations and varied colors, enhancing realism and visual interest in the second render. The pink ball remains unrotated to serve as a focal point, maintaining consistency with the single-ball render.
 
-Read the full report [here](./assets/report.pdf).
+Read the full report [here](./assets/RendermanReport_AnuKritiWadhwa.pdf).
 
 ## Project Structure
 
 ```
 renderman-golfball/
 ├── assets/
-│   ├── scene_1-HD-1024.exr                 # Sample scene 1 HD exr render
-│   ├── scene_2-HD-1024.exr                 # Sample scene 2 HD exr render
-│   ├── 4K_images/                          # png versions of the renders at a higher 4K resolution
-│   │   ├── scene_1-4k-1024.png             # Sample scene 1 4K png render
-│   │   ├── scene_2-4k-1024.png             # Sample scene 2 4K png render
-│   ├── reference_images/                   # Selected reference images
-│   │   ├── scene_1_reference.jpg           # Reference for scene 1
-│   │   ├── scene_2_reference.jpg           # Reference for scene 2
-│   │   ├── dirt_region_reference.jpg       # Reference showing dirt regions
-│   │   ├── dirt_speckles_reference.jpg     # Reference showing dirt speckles
-|   ├── report.pdf                          # Report outlining the work done in this project
-├── src/
-│   ├── assets/                             # External assets used
-│   │   ├── limpopo_golf_course_4k.tx       # Texture file*
-│   ├── lighting/                           # Lighting RIB files
-│   │   ├── lighting_common.rib             # Common lighting setup script
-│   │   ├── lighting_image1.rib             # Image 1 lighting setup script
-│   │   ├── lighting_image1.rib             # Image 2 lighting setup script
-│   ├── dimples.osl                         # Golf ball shader script
-│   ├── dimples.osl                         # Golf ball shader script
-│   ├── generate_balls.py                   # Script to generate single or multiple golf balls
-│   ├── generate_dimple_centers.py          # Script to set predetermined dimple center coordinates
-│   ├── generate_grass.py                   # Grass generation script
-│   ├── generate_scenes.py                  # Scene generating script
-│   └── render_pipeline.py                  # Main rendering script
+│   ├── scene_1-HD-1024.exr                     # Sample scene 1 HD exr render
+│   ├── scene_2-HD-1024.exr                     # Sample scene 2 HD exr render
+│   ├── 4K_images/                              # png versions of the renders at a higher 4K resolution
+│   │   ├── scene_1-4k-1024.png                 # Sample scene 1 4K png render
+│   │   ├── scene_2-4k-1024.png                 # Sample scene 2 4K png render
+│   ├── reference_images/                       # Selected reference images
+│   │   ├── scene_1_reference.jpg               # Reference for scene 1
+│   │   ├── scene_2_reference.jpg               # Reference for scene 2
+│   │   ├── dirt_region_reference.jpg           # Reference showing dirt regions
+│   │   ├── dirt_speckles_reference.jpg         # Reference showing dirt speckles
+|   ├── RendermanReport_AnuKritiWadhwa.pdf      # Report outlining the work done in this project
+├── src/                                        # Source code
+│   ├── assets/                                 # External assets used
+│   │   ├── limpopo_golf_course_4k.tx           # Texture file*
+│   ├── lighting/                               # Lighting RIB files
+│   │   ├── lighting_common.rib                 # Common lighting setup script
+│   │   ├── lighting_image1.rib                 # Image 1 lighting setup script
+│   │   ├── lighting_image1.rib                 # Image 2 lighting setup script
+│   ├── dimples.osl                             # Golf ball shader script
+│   ├── dimples.osl                             # Golf ball shader script
+│   ├── generate_balls.py                       # Script to generate single or multiple golf balls
+│   ├── generate_dimple_centers.py              # Script to set predetermined dimple center coordinates
+│   ├── generate_grass.py                       # Grass generation script
+│   ├── generate_scenes.py                      # Scene generating script
+│   └── render_pipeline.py                      # Main rendering script
 ├── .gitignore
 └── README.md
 ```
@@ -110,6 +110,12 @@ renderman-golfball/
     ```
 
 ## Output
-The two images above are the output renders:
-* Single Ball Close-Up ([`assets/scene_1-4k-1024.png`](./assets/scene_1-4k-1024.png))
-* Multi-Ball Scene ([`assets/scene_2-4k-1024.png`](./assets/scene_2-4k-1024.png))
+HD (1920x1080p) renders (`.exr`):
+- [Scene 1](./assets/scene_1-HD-1024.exr)
+- [Scene 2](./assets/scene_2-HD-1024.exr)
+
+4K (3840x2160p) renders (`.png`):
+- [Scene 1](./assets/4K_images/scene_1-4k-1024.png)
+- [Scene 2](./assets/4K_images/scene_2-4k-1024.png)
+
+Read the full report [here](./assets/RendermanReport_AnuKritiWadhwa.pdf).

@@ -1,7 +1,7 @@
 AttributeBegin
     TransformBegin
         Light "PxrDomeLight" "domeLight"
-            "string lightColorMap" ["./assets/limpopo_golf_course_4k.tx"]
+            "string lightColorMap" ["./assets/limpopo_golf_course_4k.tx"] # from https://polyhaven.com/a/limpopo_golf_course
             "float exposure" [-1.0]    # 1 stop darker
     TransformEnd
 AttributeEnd

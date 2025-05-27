@@ -45,23 +45,35 @@ Read the full report [here](./assets/report.pdf).
 ```
 renderman-golfball/
 ├── assets/
-│   ├── scene_1-4k-1024.png         # Sample scene 1 4K png render
-│   ├── scene_2-4k-1024.png         # Sample scene 2 4K png render
-│   ├── scene_1-HD-1024.exr         # Sample scene 1 HD exr render
-│   ├── scene_2-HD-1024.exr         # Sample scene 2 HD exr render
-|   ├── report.pdf                  # Report outlining the work done in this project
+│   ├── scene_1-HD-1024.exr                 # Sample scene 1 HD exr render
+│   ├── scene_2-HD-1024.exr                 # Sample scene 2 HD exr render
+│   ├── 4K_images/                          # png versions of the renders at a higher 4K resolution
+│   │   ├── scene_1-4k-1024.png             # Sample scene 1 4K png render
+│   │   ├── scene_2-4k-1024.png             # Sample scene 2 4K png render
+│   ├── reference_images/                   # Selected reference images
+│   │   ├── scene_1_reference.jpg           # Reference for scene 1
+│   │   ├── scene_2_reference.jpg           # Reference for scene 2
+│   │   ├── dirt_region_reference.jpg       # Reference showing dirt regions
+│   │   ├── dirt_speckles_reference.jpg     # Reference showing dirt speckles
+|   ├── report.pdf                          # Report outlining the work done in this project
 ├── src/
-│   ├── lighting/                   # Lighting RIB files
-│   ├── assets/                     # Referenced textures
-│   ├── dimples.osl                 # Golf ball shader script
-│   ├── generate_balls.py           # Script to generate single or multiple golf balls
-│   ├── generate_dimple_centers.py  # Script to set predetermined dimple center coordinates
-│   ├── generate_grass.py           # Grass generation script
-│   ├── generate_scenes.py          # Scene generating script
-│   └── render_pipeline.py          # Main rendering script
+│   ├── assets/                             # External assets used
+│   │   ├── limpopo_golf_course_4k.tx       # Texture file*
+│   ├── lighting/                           # Lighting RIB files
+│   │   ├── lighting_common.rib             # Common lighting setup script
+│   │   ├── lighting_image1.rib             # Image 1 lighting setup script
+│   │   ├── lighting_image1.rib             # Image 2 lighting setup script
+│   ├── dimples.osl                         # Golf ball shader script
+│   ├── dimples.osl                         # Golf ball shader script
+│   ├── generate_balls.py                   # Script to generate single or multiple golf balls
+│   ├── generate_dimple_centers.py          # Script to set predetermined dimple center coordinates
+│   ├── generate_grass.py                   # Grass generation script
+│   ├── generate_scenes.py                  # Scene generating script
+│   └── render_pipeline.py                  # Main rendering script
 ├── .gitignore
 └── README.md
 ```
+\* texture file from [https://polyhaven.com/a/limpopo_golf_course](https://polyhaven.com/a/limpopo_golf_course)
 
 ## Dependencies
 
